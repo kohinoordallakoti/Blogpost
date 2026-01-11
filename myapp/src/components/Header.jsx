@@ -1,7 +1,9 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import{useNavigate} from 'react-router-dom'
 
 const Header = () => {
+  const nav= useNavigate();
   return (
     <div>
         <div className = "flex justify-between bg-amber-600 text-white text-lg p-5 ">
@@ -14,7 +16,7 @@ const Header = () => {
                     <li><Link to = "/about">About</Link></li>
                     <li><Link to = "/contact">Contact</Link></li>
                 </ul>
-                <button className="mx-7 px-4 py-2 bg-blue-500 text-white rounded-xl hover:bg-blue-600">Register Now</button>
+                <button className="mx-7 px-4 py-2 bg-amber-500 hover:bg-amber-400 text-white rounded-xl" onClick={() => nav('/register')}>Register Now</button>
             </div>
         </div>
     </div>
