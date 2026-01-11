@@ -2,8 +2,10 @@ import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
+import { useapiHooks } from "../hooks/apiHooks";
 
 const Register = () => {
+  
   const nav = useNavigate();
   const initialValues = {
     name: "",
@@ -37,11 +39,34 @@ const Register = () => {
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
-          onSubmit={(values, { resetForm }) => {
+          onSubmit={async (values, e) => {
             console.log(values);
-            resetForm();
-            nav("/login");
-          }}
+            e.preventDefault();
+
+            try {
+              const res = await fetch("http://localhost:5000/user/create", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ name, email, password }),
+              });
+
+              const data = await res.json();
+
+              if (!res.ok) {
+                alert(data.message || "Registration failed");
+                return;
+              }
+
+              alert("Registration successful");
+              navigate("/login");
+            } catch (error) {
+              console.error(error);
+              alert("Server error");
+            }
+          }
+        }
         >
           {({ touched }) => (
           <Form className="grid grid-cols-1 gap-6">
