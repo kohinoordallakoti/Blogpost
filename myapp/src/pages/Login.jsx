@@ -2,12 +2,18 @@ import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
+import { login } from "../redux/authSlice";
+import { useDispatch } from "react-redux";
+import axios from "axios";
 
 const Login = () => {
   const nav = useNavigate();
+  const dispatch = useDispatch();
+
   const initialValues = {
     email: "",
     password: "",
+    role: "",
   };
 
   const validationSchema = Yup.object({
@@ -29,65 +35,100 @@ const Login = () => {
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
-          onSubmit={(values, { resetForm }) => {
-            console.log(values);
-            resetForm();
-            nav("/dashboard");
+          onSubmit={async (values, { setSubmitting, setErrors }) => {
+            try {
+              const res = await axios.post(
+                "http://localhost:5000/user/login",
+                values,
+                { withCredentials: true }
+              );
+
+              const { user, accessToken, refreshToken } = res.data;
+
+              localStorage.setItem("user", JSON.stringify(user));
+              localStorage.setItem("accessToken", accessToken);
+              localStorage.setItem("refreshToken", refreshToken);
+
+              console.log("USER:", user);
+              console.log("ACCESS TOKEN:", accessToken);
+
+              dispatch(login(user));
+
+              if (user.role === "admin") {
+                nav("/admin/dashboard");
+              } else {
+                nav("/dashboard");
+              }
+            } catch (error) {
+              console.error(error);
+              setErrors({
+                message: error.response?.data?.message || "Login failed",
+              });
+            } finally {
+              setSubmitting(false);
+            }
           }}
         >
           {({ touched }) => (
-          <Form className="grid grid-cols-1 gap-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Email
-              </label>
-              <Field
-                name="email"
-                type="email"
-                placeholder="Your email"
-                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-amber-600"
-              />
-              <ErrorMessage
-                name="email"
-                component="div"
-                className="text-red-500 text-xs mt-1"
-              />
-            </div>
+            <Form className="grid grid-cols-1 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Email
+                </label>
+                <Field
+                  name="email"
+                  type="email"
+                  placeholder="Your email"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-amber-600"
+                />
+                <ErrorMessage
+                  name="email"
+                  component="div"
+                  className="text-red-500 text-xs mt-1"
+                />
+              </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Password
-              </label>
-              <Field
-                name="password"
-                type="password"
-                placeholder="Your password"
-                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-amber-600"
-              />
-              <ErrorMessage
-                name="password"
-                component="div"
-                className="text-red-500 text-xs mt-1"
-              />
-            </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Password
+                </label>
+                <Field
+                  name="password"
+                  type="password"
+                  placeholder="Your password"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-amber-600"
+                />
+                <ErrorMessage
+                  name="password"
+                  component="div"
+                  className="text-red-500 text-xs mt-1"
+                />
+              </div>
 
-            <div className="flex justify-center mt-4">
-              <button
-                type="submit"
-                className="px-6 py-3 bg-amber-600 text-white rounded-xl hover:bg-amber-500 text-lg"
-              >
-                Login
-              </button>
-            </div>
-            {Object.keys(touched).length === 0 && (
-            <div className="flex justify-center">
-              <h1>Don't have an account?  
-                <button type="button" className="mx-1 text-amber-500 hover:text-blue-400 " onClick={() => nav('/register')}> Signup</button>
-              </h1>
-                            
-            </div>
-            )}
-          </Form>
+              <div className="flex justify-center mt-4">
+                <button
+                  type="submit"
+                  className="px-6 py-3 bg-amber-600 text-white rounded-xl hover:bg-amber-500 text-lg"
+                >
+                  Login
+                </button>
+              </div>
+              {Object.keys(touched).length === 0 && (
+                <div className="flex justify-center">
+                  <h1>
+                    Don't have an account?
+                    <button
+                      type="button"
+                      className="mx-1 text-amber-500 hover:text-blue-400 "
+                      onClick={() => nav("/register")}
+                    >
+                      {" "}
+                      Signup
+                    </button>
+                  </h1>
+                </div>
+              )}
+            </Form>
           )}
         </Formik>
       </div>

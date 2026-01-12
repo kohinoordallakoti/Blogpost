@@ -2,7 +2,6 @@ import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
-import { useapiHooks } from "../hooks/apiHooks";
 
 const Register = () => {
   
@@ -39,17 +38,19 @@ const Register = () => {
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
-          onSubmit={async (values, e) => {
+          onSubmit={async (values) => {
             console.log(values);
-            e.preventDefault();
-
             try {
               const res = await fetch("http://localhost:5000/user/create", {
                 method: "POST",
                 headers: {
                   "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ name, email, password }),
+                body: JSON.stringify({ 
+                  name: values.name,
+                  email: values.email, 
+                  password: values.password 
+                }),
               });
 
               const data = await res.json();
@@ -60,7 +61,7 @@ const Register = () => {
               }
 
               alert("Registration successful");
-              navigate("/login");
+              nav("/login");
             } catch (error) {
               console.error(error);
               alert("Server error");

@@ -4,7 +4,7 @@ import { generateToken } from '../utils/jwtToken.js';
 
 export const createUser = async (req, res) => {
     try {
-        const {name, email, password} = req.body;
+        const {name, email, password, role} = req.body;
 
         if (!name || !email || !password) {
             return res.status(400).json({message: "All fields are required"});
@@ -17,7 +17,8 @@ export const createUser = async (req, res) => {
         const newUser = new User({
             name,
             email,
-            password: hashedPassword
+            password: hashedPassword,
+            role
         });
         await newUser.save();
 
@@ -42,6 +43,7 @@ export const loginUser = async (req, res) => {
         if (!isMatch){
             return res.status(400).json({message: "Invalid credentials"});
         }
+        
         const accessToken = generateToken(user._id, process.env.ACCESS_TOKEN_SECRET, '15m');
         const refreshToken = generateToken(user._id, process.env.REFRESH_TOKEN_SECRET, '7d');
 
@@ -49,7 +51,7 @@ export const loginUser = async (req, res) => {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: "strict",
-            maxAge: 15 * 60 * 60 * 1000
+            maxAge: 15 * 60 * 60 * 1000,
         })
 
         res.cookie("refreshToken", refreshToken, {
@@ -67,10 +69,20 @@ export const loginUser = async (req, res) => {
         id:user._id,
         name:user.name,
         email:user.email,
-        password:user.password
+        password:user.password,
+        role:user.role
     }});
     } catch (error) {
         res.status(500).json({error: error.message});
+    }
+}
+
+export const loginAdmin = async (req, res) => {
+    try{
+
+    }catch(error)
+    {
+
     }
 }
 

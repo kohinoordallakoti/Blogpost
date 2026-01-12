@@ -1,28 +1,58 @@
-import React from 'react'
+import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
+  const nav = useNavigate();
+
   return (
-    <div>
-        <div className="flex md:flex-row justify-between mx-10 my-20 bg-amber-50">
-          <section className="w-1/2">
-            <div className="flex flex-col gap-5">
+    <div className="min-h-screen bg-amber-100">
+      <section className="max-w-7xl mx-auto px-6 py-20 text-center">
+        <h2 className="text-4xl md:text-5xl font-bold text-gray-800 mb-6">
+          Welcome to Our Blog
+        </h2>
+        <p className="text-gray-600 max-w-2xl mx-auto mb-10">
+          Discover amazing stories, insights, and ideas from talented writers
+          around the world.
+        </p>
 
-              <h1 className="text-3xl font-bold">Blogging App</h1>
-              <p className="text-xl font-semibold">Welcome! Explore Our App which provides features for posting blogs, liking and commenting on them.</p>
-              <p className="text-md font-light"> If you want to experience the full potential of our app, please register now.</p>
-              
-              <div className="flex items-center my-5">
-                <button className="mx-7 px-4 py-3 bg-amber-600 text-white rounded-xl hover:bg-amber-500 text-lg">Login</button>
-                <button className="mx-7 px-4 py-3 bg-amber-600 text-white rounded-xl hover:bg-amber-500 text-lg">Register</button>
-              </div>
-            </div>
-          </section>
-          <section className="w-1/2 flex justify-center">
-            <img src="./homepage.png" alt="" width={700} height={650} className="rounded overflow-clip" />
-          </section>
+        <div className="flex justify-center gap-4">
+          <button
+            onClick={() => nav("/blog")}
+            className="px-6 py-3 bg-amber-600 text-white rounded-full hover:bg-amber-500 transition"
+          >
+            Explore All Blogs
+          </button>
+          <button
+            onClick={() => nav("/register")}
+            className="px-6 py-3 border border-amber-600 text-amber-600 rounded-full hover:bg-amber-100 transition"
+          >
+            Join Us Today
+          </button>
         </div>
-    </div>
-  )
-}
+      </section>
 
-export default Home
+      <section className="bg-white py-16">
+        <div className="max-w-7xl mx-auto px-6">
+          <h3 className="text-2xl font-bold text-gray-800 text-center mb-8">
+            Browse by Category
+          </h3>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {["Technology", "Lifestyle", "Education", "Travel"].map(
+              (cat, index) => (
+                <div
+                  key={index}
+                  className="p-6 border rounded-xl text-center cursor-pointer hover:shadow-md hover:border-amber-600 transition"
+                >
+                  <h4 className="font-semibold text-gray-700">{cat}</h4>
+                </div>
+              )
+            )}
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+};
+
+export default Home;
