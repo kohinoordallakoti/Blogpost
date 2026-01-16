@@ -57,7 +57,7 @@ const Login = () => {
               if (user.role === "admin") {
                 nav("/admin/dashboard");
               } else {
-                nav("/dashboard");
+                nav("/blog");
               }
             } catch (error) {
               console.error(error);

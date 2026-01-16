@@ -4,10 +4,12 @@ import dotenv from 'dotenv'
 import userRoutes from './routes/userRoutes.js'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
-
+import blogRoutes from './routes/blogRoutes.js'
+import categoryRoutes from './routes/categoryRoutes.js'
 dotenv.config()
 connectDB();
 const app = express();
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.json());
 
@@ -30,6 +32,11 @@ app.use(cors({
 
 app.use('/user', userRoutes)
 
+app.use('/blog', blogRoutes)
+
+app.use('/category', categoryRoutes)
+
+app.use("/upload", express.static("upload"));
 
 app.get("/", (req, res) => {
     res.send("Server is running")

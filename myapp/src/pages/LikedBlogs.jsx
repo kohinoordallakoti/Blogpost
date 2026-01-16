@@ -3,7 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Card from "../components/Card"
 
-const Blogs = () => {
+const LikedBlogs = () => {
   const nav = useNavigate();
   const [blog, setBlogs] = useState();
   const fetchData = async () => {
@@ -55,4 +55,4 @@ const Blogs = () => {
   );
 };
 
-export default Blogs;
+export default LikedBlogs;

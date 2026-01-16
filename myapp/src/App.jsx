@@ -6,10 +6,15 @@ import About from './pages/About'
 import Contact from './pages/Contact'
 import Register from './pages/Register'
 import Login from './pages/Login'
-import Dashboard from './pages/Dashboard'
+import Dashboard from './pages/admin/Dashboard'
 import PrivateRoute from './components/PrivateRoutes'
 import Blogs from './pages/Blogs'
 import Profile from './pages/Profile'
+import LikedBlogs from './pages/LikedBlogs'
+import Categories from './pages/admin/Categories'
+import Blogsadmin from './pages/admin/Blogsadmin'
+import AdminLayout from './components/AdminLayout'
+import Blogform from './pages/admin/Blogform'
 
 const App = () => {
   return (
@@ -23,11 +28,18 @@ const App = () => {
         <Route path ="/register" element = { <Register/>}/>
         <Route path ="/login" element = {<Login/>}/>
         <Route element = {<PrivateRoute/>}>
-        <Route path ="/dashboard" element = {<Dashboard/>}/>
-        <Route path ="/admin/dashboard" element = {<Dashboard/>}/>
+        <Route path ="likedblogs" element = {<LikedBlogs/>}/>
         <Route path ="/profile" element = { <Profile/>}/>
         </Route>
         </Route>
+        <Route path = "/admin" element = {<AdminLayout/>}>
+        <Route path ="blogform" element = {<Blogform/>}/>
+        <Route path = "dashboard" element = {<Dashboard/>}/>
+        <Route path = "categories" element = { <Categories/>}/>
+        <Route path ="blogs" element = {<Blogsadmin/>}/>
+        </Route>
+        
+        
       </Routes>
     </div>
   )
