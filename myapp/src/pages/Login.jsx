@@ -5,10 +5,14 @@ import { useNavigate } from "react-router-dom";
 import { login } from "../redux/authSlice";
 import { useDispatch } from "react-redux";
 import axios from "axios";
+import { useSelector } from "react-redux";
+import { logout } from "../redux/authSlice";
 
 const Login = () => {
   const nav = useNavigate();
   const dispatch = useDispatch();
+  const user = useSelector((state) => state.auth.user);
+
 
   const initialValues = {
     email: "",

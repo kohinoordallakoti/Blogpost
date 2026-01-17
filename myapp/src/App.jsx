@@ -32,14 +32,14 @@ const App = () => {
         <Route path ="/profile" element = { <Profile/>}/>
         </Route>
         </Route>
+        <Route element = {<PrivateRoute/>}>
         <Route path = "/admin" element = {<AdminLayout/>}>
         <Route path ="blogform" element = {<Blogform/>}/>
         <Route path = "dashboard" element = {<Dashboard/>}/>
         <Route path = "categories" element = { <Categories/>}/>
         <Route path ="blogs" element = {<Blogsadmin/>}/>
         </Route>
-        
-        
+        </Route>
       </Routes>
     </div>
   )

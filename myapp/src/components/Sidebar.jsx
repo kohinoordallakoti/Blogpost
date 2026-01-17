@@ -5,6 +5,8 @@ import {CiLogout} from "react-icons/ci"
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../redux/authSlice";
 
 const menuItems =[
   {
@@ -26,6 +28,8 @@ const menuItems =[
 ]
 
 const Sidebar = ({open,setOpen}) => {
+    const dispatch = useDispatch();
+    const user = useSelector((state) => state.auth.user);
     const nav = useNavigate();
 
     const handleChange = async () => {
@@ -37,9 +41,7 @@ const Sidebar = ({open,setOpen}) => {
       );
 
       if (res.status === 200) {
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
-        alert("Logout successful");
+        dispatch(logout());
         nav("/login");
       }
     } catch (error) {

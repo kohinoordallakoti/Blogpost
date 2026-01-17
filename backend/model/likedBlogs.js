@@ -2,7 +2,7 @@
 
 
 const LikedBlogs = new mongoose.Schema({
-  User: {
+  user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
@@ -12,7 +12,7 @@ const LikedBlogs = new mongoose.Schema({
   }
 }, { timestamps: true });
 
-LikedBlogs.index({ User: 1, blog: 1 }, { unique: true });
+LikedBlogs.index({ user: 1, blog: 1 }, { unique: true });
 
 const LikeBlog = mongoose.model("LikeBlog", LikedBlogs);
 

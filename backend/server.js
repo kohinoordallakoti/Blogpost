@@ -6,6 +6,7 @@ import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import blogRoutes from './routes/blogRoutes.js'
 import categoryRoutes from './routes/categoryRoutes.js'
+
 dotenv.config()
 connectDB();
 const app = express();
@@ -18,6 +19,7 @@ app.use(express.json());
 //   console.log("this is  middleware")
 //   next();
 // })
+
 
 app.use((err,req,res,next) => {
   console.log(err)
