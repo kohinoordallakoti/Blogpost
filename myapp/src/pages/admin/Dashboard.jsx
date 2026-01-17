@@ -1,22 +1,44 @@
 import React from "react";
-import Sidebar from "../../components/Sidebar";
+import {useState} from "react";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import axios from "axios";
+import { MdAddCircleOutline, MdWavingHand } from "react-icons/md";
+import { LuFolders } from "react-icons/lu";
+import { LuFileSpreadsheet } from "react-icons/lu";
+import { BsFillLightningChargeFill } from "react-icons/bs";
 
 const Dashboard = () => {
+  const nav = useNavigate();
+  const [countblogs, setCountBlogs] = useState(0);
+  const [countpublished, setCountPublished] = useState(0);
+  // const [likedblogs, setLikedBlogs] = useState(0);
+  useEffect(() => {
+    axios
+      .get("http://localhost:5000/blog/get")
+      .then((res) => {
+        const blogs = res.data;
+        setCountBlogs(blogs.length);
+        const publishedCount = blogs.filter(blog => blog.published).length;
+      setCountPublished(publishedCount);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
   return (
-    <div className="flex min-h-screen bg-gray-100">
+    <div className="flex bg-amber-50">
 
-      {/* Main Content */}
       <main className="flex-1 p-8">
-        {/* Header */}
-        <h1 className="text-3xl font-bold text-amber-600">Welcome Back! 👋</h1>
+        <h1 className="text-3xl font-bold text-amber-600">Welcome Back! <MdWavingHand className="inline text-amber-200"/></h1>
         <p className="text-gray-600 mb-6">Here's your blog overview for today</p>
-
-        {/* Stats Cards */}
         <div className="grid grid-cols-4 gap-4 mb-6">
+
           <div className="bg-amber-400 text-white p-6 rounded-xl shadow">
-            <div className="text-2xl font-bold">4</div>
+            <div className="text-2xl font-bold">{countblogs}</div>
             <div>Total Blogs</div>
-            <div className="text-sm">3 Published, 1 Drafts</div>
+            <div className="text-sm">{countpublished} Published, {countblogs - countpublished} Drafts</div>
           </div>
           <div className="bg-pink-400 text-white p-6 rounded-xl shadow">
             <div className="text-2xl font-bold">0</div>
@@ -24,30 +46,32 @@ const Dashboard = () => {
             <div className="text-sm">Across all your blogs</div>
           </div>
           <div className="bg-green-400 text-white p-6 rounded-xl shadow">
-            <div className="text-2xl font-bold">3</div>
+            <div className="text-2xl font-bold">{countpublished}</div>
             <div>Published</div>
             <div className="text-sm">Live on your website</div>
           </div>
           <div className="bg-orange-400 text-white p-6 rounded-xl shadow">
-            <div className="text-2xl font-bold">1</div>
+            <div className="text-2xl font-bold">{countblogs - countpublished}</div>
             <div>Drafts</div>
             <div className="text-sm">Waiting to be published</div>
           </div>
         </div>
 
-        {/* Quick Actions */}
-        <h2 className="text-xl font-bold mb-3">⚡ Quick Actions</h2>
+        <h2 className="text-xl font-bold mb-3"><BsFillLightningChargeFill className="inline text-yellow-500"/> Quick Actions</h2>
         <div className="grid grid-cols-3 gap-4">
-          <button className="bg-amber-100 hover:bg-amber-200 p-6 rounded-xl shadow flex flex-col items-center gap-2">
-            <span className="text-3xl">➕</span>
+          <button className="bg-amber-100 hover:bg-amber-200 p-6 rounded-xl shadow flex flex-col items-center gap-2"
+          onClick={()=>nav('/admin/blogform')}>
+            <span className="text-3xl"><MdAddCircleOutline className="text-red-500"/></span>
             Create Blog
           </button>
-          <button className="bg-pink-100 hover:bg-pink-200 p-6 rounded-xl shadow flex flex-col items-center gap-2">
-            <span className="text-3xl">📁</span>
+          <button className="bg-pink-100 hover:bg-pink-200 p-6 rounded-xl shadow flex flex-col items-center gap-2"
+          onClick={()=>nav('/admin/categories')}>
+            <span className="text-3xl"><LuFolders className="text-yellow-500"/></span>
             Manage Categories
           </button>
-          <button className="bg-green-100 hover:bg-green-200 p-6 rounded-xl shadow flex flex-col items-center gap-2">
-            <span className="text-3xl">📄</span>
+          <button className="bg-green-100 hover:bg-green-200 p-6 rounded-xl shadow flex flex-col items-center gap-2"
+          onClick={()=>nav('/admin/blogs')}>
+            <span className="text-3xl"><LuFileSpreadsheet className="text-blue-500"/></span>
             All Blogs
           </button>
         </div>

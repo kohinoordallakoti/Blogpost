@@ -6,6 +6,7 @@ import Card from "../components/Card"
 const Blogs = () => {
   const nav = useNavigate();
   const [blog, setBlogs] = useState();
+  const [likedBlogs, setLikedBlogs] = useState([]);
   const fetchData = async () => {
     try {
       const res = await axios.get("http://localhost:5000/blog/get");
@@ -19,6 +20,8 @@ const Blogs = () => {
   useEffect(() => {
     fetchData();
   }, []);
+  const publishedBlogs = blog?.filter(b => b.published);
+
 
   const handleDelete = async (id) => {
     if (!id) {
@@ -36,17 +39,12 @@ const Blogs = () => {
   };
 
   return (
-    <div className="flex flex-col justify-center items-center gap-10">
-      <div className="absolute top-20 left-5">
-        <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          onClick={() => nav("/")}
-        >
-          Add Blog
-        </button>
+    <div className="flex flex-col justify-center items-center gap-10 bg-stale-100">
+      <div>
+        <h1 className="text-3xl font-bold mt-5">All Blogs</h1>
       </div>
-      {blog?.map((item) => (
-        <Card key={item._id} title={item.title} description={item.description} image={item.image} id={item._id} />
+      {publishedBlogs?.map((item) => (
+        <Card key={item._id} title={item.title} description={item.description} category={item.category} image={item.image} id={item._id} />
       ))}
       {blog?.length === 0 && (
         <h1 className="text-2xl font-bold">No Blogs Found</h1>

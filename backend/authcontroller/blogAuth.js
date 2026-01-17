@@ -1,16 +1,14 @@
 import Blog from "../model/blogSchema.js"
+import LikeBlog from "../model/likedBlogs.js";
 
 export const createBlog = async (req, res) => {
     try{
-        const {title, description, category, image} = req.body;
-
+        const {title, description, category, image, published} = req.body;
         if (!title || !description || !category) {
-      return res.status(400).json({ message: "Title & description required" });
-    }
-
+            return res.status(400).json({ message: "Title, description or category required" });
+        }
         if(!req.file){
-            return res.status(400).json ({message:"Image is required"})
-            
+            return res.status(400).json ({message:"Image is required"})  
         }
         const blog = await Blog.create(
             {
@@ -18,6 +16,7 @@ export const createBlog = async (req, res) => {
                 description,
                 category,
                 image:req.file.filename,
+                published
             }
         );
         res.status(201).json({message:"Blog created successfully", blog});
@@ -79,6 +78,74 @@ export const deleteBlog = async(req,res) => {
            const blog = await Blog.findByIdAndDelete(req.params.id);
        res.json({message:"Blog deleted successfully"});
     }catch(error) {
+        res.status(500).json({error:error.message})
+    }
+}
+
+export const likeBlogs = async(req,res) => {
+    const { id } = req.params;
+    const userId = req.user._id;
+
+  try {
+    // Check if the blog exists
+    const blog = await Blog.findById(id);
+    if (!blog) {
+      return res.status(404).json({ message: "Blog not found" });
+    }
+
+    // Check if the user has already liked this blog
+    const existingLike = await LikeBlog.findOne({ User: userId, blog: id });
+    
+    if (existingLike) {
+      // If already liked, unlike the blog
+      await LikeBlog.deleteOne({ User: userId, blog: id });
+      const newLikeCount = await LikeBlog.countDocuments({ blog: id });
+      
+      return res.status(200).json({
+        message: "Blog unliked",
+        liked: false,
+        likeCount: newLikeCount,
+      });
+    }
+    const newLike = new LikeBlog({
+      User: userId,
+      blog: id,
+    });
+
+    await newLike.save();
+    
+    const newLikeCount = await LikeBlog.countDocuments({ blog: id });
+
+    return res.status(200).json({
+      message: "Blog liked successfully",
+      liked: true,
+      likeCount: newLikeCount,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error, please try again later" });
+  }
+}
+
+export const dislikeBlog = async(req,res) => {
+    try{
+        const blog = await Blog.findById(req.params.id);
+        if(!blog){
+            return res.status(404).json({message:"Blog not found"});
+        }
+        blog.dislikes = blog.dislikes + 1;
+        const updatedBlog = await blog.save();
+        res.status(201).json({message:"Blog disliked successfully",updatedBlog});
+    }catch(error){
+        res.status(500).json({error:error.message})
+    }
+}
+
+export const getlikeBlogs = async(req,res) => {
+    try{
+        const blog = await Blog.find().sort({likes:-1});
+        res.status(201).json(blog);
+    }catch(error){
         res.status(500).json({error:error.message})
     }
 }

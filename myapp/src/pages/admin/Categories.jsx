@@ -2,12 +2,18 @@ import React, { useEffect, useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { MdOutlineEdit } from "react-icons/md";
 import { MdAddCircleOutline } from "react-icons/md";
-import {RiDeleteBin5Line} from "react-icons/ri"
+import { RiDeleteBin5Line } from "react-icons/ri";
 import * as Yup from "yup";
 import axios from "axios";
 
 const Categories = () => {
   const [categories, setCategories] = useState([]);
+  const [initialValues, setInitialValues] = useState({
+    name: "",
+    description: "",
+  });
+
+  const [selectedId, setSelectedId] = useState(null);
 
   // Fetch categories
   const fetchCategories = async () => {
@@ -27,32 +33,32 @@ const Categories = () => {
   // Delete category
   const deleteCategory = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/category/delete/${id}`, {
-        method: "DELETE",
-      });
+      await axios.delete(`http://localhost:5000/category/delete/${id}`);
       fetchCategories();
     } catch (err) {
       console.error(err);
     }
   };
 
-  // Edit category
-  const editCategory = async (id, name, description) => {
+  const editCategory = async (id) => {
     try {
-      await axios.put(`http://localhost:5000/category/update/${id}`, {
-        name,
-        description,
+      const res = await axios.get(`http://localhost:5000/category/get/${id}`);
+
+      setInitialValues({
+        name: res.data.category.name,
+        description: res.data.category.description,
       });
-      fetchCategories();
+
+      setSelectedId(id);
     } catch (err) {
       console.error(err);
     }
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-      <div className="bg-white rounded-xl shadow p-6">
+    <div className="bg-amber-50 h-full">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 overflow-x-hidden w-full">
+      <div className="bg-white rounded-xl shadow p-6 m-4">
         <h2 className="text-xl font-semibold mb-4">All Categories</h2>
 
         <table className="w-full">
@@ -77,40 +83,52 @@ const Categories = () => {
                     <RiDeleteBin5Line />
                   </button>
                   <button
-                    onClick={() => editCategory(cat._id, cat.name, cat.description)}
+                    onClick={() => editCategory(cat._id)}
                     className="text-green-500 hover:text-green-700"
                   >
                     <MdOutlineEdit />
                   </button>
                 </td>
-                
               </tr>
             ))}
           </tbody>
         </table>
       </div>
 
-      <div className="bg-white rounded-xl shadow p-6">
-        <h2 className="text-xl font-semibold mb-4">Add Category</h2>
+      <div className="bg-white rounded-xl shadow p-6 m-4">
+        <h2 className="text-xl font-semibold mb-4">{selectedId ? "Edit Category" : "Add Category"}</h2>
 
         <Formik
-          initialValues={{ name: "", description: "" }}
+          initialValues={initialValues}
+          enableReinitialize 
           validationSchema={Yup.object({
             name: Yup.string().required("Category name is required"),
             description: Yup.string().required("Description is required"),
           })}
-          onSubmit={async (values, { resetForm}) => {
-              try {
-              const res = await axios.post("http://localhost:5000/category/create",values);
+          onSubmit={async (values, { resetForm }) => {
+            try {
+              if (selectedId) {
+                await axios.put(
+                  `http://localhost:5000/category/update/${selectedId}`,
+                  values
+                );
+              } else {
+                await axios.post(
+                  "http://localhost:5000/category/create",
+                  values
+                );
+              }
+
               resetForm();
-              console.log(values);
+              setSelectedId(null);
+              setInitialValues({ name: "", description: "" });
+              fetchCategories();
             } catch (err) {
               console.error(err);
             }
           }}
         >
           <Form className="space-y-4">
-
             <div>
               <label className="block text-sm font-medium mb-1">
                 Category Name
@@ -148,12 +166,14 @@ const Categories = () => {
               type="submit"
               className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg flex items-center justify-center gap-2"
             >
-              <MdAddCircleOutline/> Add Category
+              {selectedId ? <MdOutlineEdit /> : <MdAddCircleOutline />}
+              {selectedId ? "Update Category" : "Add Category"}
             </button>
           </Form>
         </Formik>
       </div>
     </div>
+</div>
   );
 };
 

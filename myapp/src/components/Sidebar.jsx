@@ -25,9 +25,8 @@ const menuItems =[
 
 ]
 
-const Sidebar = () => {
-  const [open, setOpen] = useState(true);
-  const nav = useNavigate();
+const Sidebar = ({open,setOpen}) => {
+    const nav = useNavigate();
 
     const handleChange = async () => {
     try {
@@ -49,7 +48,8 @@ const Sidebar = () => {
     }
   };
   return (
-    <div className={`border shadow-md h-screen duration-500 ${open ? "w-60 bg-amber-600 text-white" : "w-16 flex flex-col bg-gray-200" }`}>
+    <div className={`h-screen duration-500 shadow-md
+        ${open ? "w-60 bg-amber-600 text-white" : "w-16 bg-gray-200 text-gray-800"}`}>
 
         <div className="px-3 py-2 h-20 flex justify-between items-center">
             <h1 className={`text-2xl font-bold ${open ? "w-20" : "w-0" } overflow-hidden`}>Admin</h1>

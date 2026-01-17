@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const Card = ({ image, title, description }) => {
+const Card = ({ image, title, description, category }) => {
   const [liked, setLiked] = useState(false);
   const [likes, setLikes] = useState(0);
   const [comments, setComments] = useState([]);
@@ -43,22 +43,21 @@ const Card = ({ image, title, description }) => {
   };
 
   return (
-    <div className="max-w-4xl m-6 bg-white rounded-xl shadow-lg shadow-amber-100 lg:h-30 md:h-50 overflow-hidden flex flex-col md:flex-row ">
+    <div className="max-w-4xl m-6 bg-amber-50 rounded-xl shadow-lg lg:h-50 md:h-50 overflow-hidden flex flex-col md:flex-row ">
       <div className="md:w-1/3 w-full h-56 md:h-auto">
         <img
           src={`http://localhost:5000/upload/${image}`}
           alt={title}
-          className="w-full object-cover"
+          className="w-full object-cover my-3 "
         />
       </div>
-
-      <div className="md:w-2/3 p-6 flex flex-col justify-between">
+      <div className="md:w-2/3 px-6 flex flex-col justify-between my-3">
         <div>
+            <span className="inline px-2 rounded-xl bg-amber-100 text-gray-500">{category}</span>
           <h2 className="text-2xl font-semibold text-gray-800">{title}</h2>
           <p className="mt-3 text-gray-600 leading-relaxed">{description}</p>
         </div>
 
-        {/* Actions */}
         <div className="flex items-center gap-6 mt-6">
           <button
             onClick={handleLike}
