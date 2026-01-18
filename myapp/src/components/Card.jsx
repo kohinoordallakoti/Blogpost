@@ -70,7 +70,7 @@ const Card = ({ blogData }) => {
 
 
   return (
-    <div className="max-w-4xl m-6 bg-amber-50 rounded-xl shadow-lg overflow-hidden flex flex-col md:flex-row">
+    <div className="max-w-4xl m-6 bg-amber-50 rounded-xl shadow-lg overflow-hidden flex flex-col md:flex-row text-amber-600">
       <div className="md:w-1/3 w-full h-56 md:h-auto">
         <img
           src={`http://localhost:5000/upload/${image}`}
@@ -81,9 +81,9 @@ const Card = ({ blogData }) => {
 
       <div className="md:w-2/3 px-6 flex flex-col justify-between my-3">
         <div>
-          <h2 className="text-2xl font-semibold text-gray-800">{title}</h2>
-          <p className="mt-3 text-gray-600 leading-relaxed">{description}</p>
-          <span className="inline px-2 rounded-xl bg-amber-100 text-gray-500">{category}</span>
+          <h2 className="text-2xl font-semibold">{title}</h2>
+          <p className="mt-3 leading-relaxed">{description}</p>
+          <span className="inline px-2 rounded-xl bg-amber-100">{category}</span>
         </div>
 
         <div className="flex items-center gap-6 mt-6">
@@ -96,7 +96,7 @@ const Card = ({ blogData }) => {
           </button>
 
           <button
-            className="flex items-center gap-2 text-blue-500 hover:text-blue-600 transition duration-300 ease-in-out  cursor-pointer"
+            className="flex items-center gap-2 text-green-400 hover:text-green-500 transition duration-300 ease-in-out  cursor-pointer"
             onClick={handleComment}
           >
             <FaRegCommentDots />
@@ -116,7 +116,7 @@ const Card = ({ blogData }) => {
             <button
               type="button"
               onClick={submitComment}
-              className="self-end flex items-center gap-2 text-blue-500 hover:text-blue-600 transition cursor-pointer"
+              className="self-end flex items-center gap-2 text-green-400 hover:text-green-500 transition cursor-pointer"
             >
               <IoMdSend /> Send
             </button>

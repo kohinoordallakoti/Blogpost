@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { logout } from "../redux/authSlice";
+import { FiSearch } from "react-icons/fi";
 
 const Header = () => {
   const nav = useNavigate();
@@ -15,19 +16,31 @@ const Header = () => {
   const toggleMobileMenu = () => setMobileMenuOpen(!mobileMenuOpen);
   //   const handleSearchChange = (e) => setSearchQuery(e.target.value);
 
-  
+  const handleSearchKeyDown = (e) => {
+    if (e.key === "Enter" && searchQuery.trim()) {
+      nav(`/blog?search=${encodeURIComponent(searchQuery)}`);
+      setSearchQuery("");
+    }
+  };
+
+  const handleSearchIconClick = () => {
+    if (searchQuery.trim()) {
+      nav(`/blog?search=${encodeURIComponent(searchQuery)}`);
+      setSearchQuery("");
+    }
+  };
 
   return (
     <header className="bg-amber-600 text-white relative">
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between h-20">
         <h1
-          className="text-4xl font-bold cursor-pointer"
+          className="text-4xl font-bold cursor-pointer mx-2"
           onClick={() => nav("/")}
         >
-          Logo
+          Blog Post
         </h1>
 
-        <nav className="hidden md:flex gap-6 text-lg font-medium">
+        <nav className="hidden md:flex gap-6 text-lg font-medium mx-2">
           <Link className="hover:text-amber-200" to="/">
             Home
           </Link>
@@ -43,13 +56,20 @@ const Header = () => {
         </nav>
 
         <div className="flex items-center gap-3 relative">
-          {/* <input
-            type="text"
-            placeholder="Search..."
-            value={searchQuery}
-            onChange={handleSearchChange}
-            className="hidden md:block px-3 py-1 rounded-full text-black"
-          /> */}
+          <div className="hidden md:flex items-center bg-white rounded-full px-3 py-1">
+            <FiSearch
+              className="text-amber-600 cursor-pointer mr-2"
+              onClick={handleSearchIconClick}
+            />
+            <input
+              type="text"
+              placeholder="Search blogs..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={handleSearchKeyDown}
+              className="outline-none text-black bg-transparent"
+            />
+          </div>
 
           {user ? (
             <div className="relative flex gap-10 ">
@@ -80,6 +100,7 @@ const Header = () => {
                     onClick={() => {
                       dispatch(logout());
                       setDropdownOpen(false);
+                      nav("/login");
                     }}
                     className="block w-full text-left px-4 py-2 hover:bg-amber-100 transition"
                   >
@@ -127,6 +148,27 @@ const Header = () => {
       </div>
 
       {mobileMenuOpen && (
+        <div className="md:hidden bg-amber-500 text-white px-6 py-4 flex flex-col gap-3">
+          <div className="flex items-center bg-white rounded px-3 py-2 mb-3">
+  <FiSearch
+    className="text-amber-600 cursor-pointer mr-2"
+    onClick={() => {
+      handleSearchIconClick();
+      toggleMobileMenu();
+    }}
+  />
+  <input
+    type="text"
+    placeholder="Search blogs..."
+    value={searchQuery}
+    onChange={(e) => setSearchQuery(e.target.value)}
+    onKeyDown={(e) => {
+      handleSearchKeyDown(e);
+      toggleMobileMenu();
+    }}
+    className="w-full outline-none text-black"
+  />
+</div>
         <nav className=" md:hidden bg-amber-500 text-white px-6 py-4 flex flex-col gap-3">
           <Link to="/" onClick={toggleMobileMenu}>
             Home
@@ -149,6 +191,7 @@ const Header = () => {
                 onClick={() => {
                   dispatch(logout());
                   toggleMobileMenu();
+                  nav("/login");
                 }}
                 className="cursor-pointer w-full text-left "
               >
@@ -166,6 +209,7 @@ const Header = () => {
             </>
           )}
         </nav>
+        </div>
       )}
     </header>
   );

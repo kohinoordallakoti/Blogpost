@@ -56,15 +56,13 @@ const Register = () => {
               const data = await res.json();
 
               if (!res.ok) {
-                alert(data.message || "Registration failed");
+                alert(data.message || "Something went wrong");
                 return;
               }
-
-              alert("Registration successful");
               nav("/login");
             } catch (error) {
               console.error(error);
-              alert("Server error");
+              alert(error.message);
             }
           }
         }

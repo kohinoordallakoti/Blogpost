@@ -23,6 +23,7 @@ const Categories = () => {
       setCategories(res.data);
     } catch (err) {
       console.error(err);
+      alert(err.response.data.message);
     }
   };
 
@@ -37,6 +38,7 @@ const Categories = () => {
       fetchCategories();
     } catch (err) {
       console.error(err);
+      alert(err.response.data.message);
     }
   };
 
@@ -52,6 +54,7 @@ const Categories = () => {
       setSelectedId(id);
     } catch (err) {
       console.error(err);
+      alert(err.response.data.message);
     }
   };
 

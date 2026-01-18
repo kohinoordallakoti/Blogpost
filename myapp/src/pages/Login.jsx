@@ -14,6 +14,7 @@ const Login = () => {
   const user = useSelector((state) => state.auth.user);
 
 
+
   const initialValues = {
     email: "",
     password: "",
@@ -68,6 +69,7 @@ const Login = () => {
               setErrors({
                 message: error.response?.data?.message || "Login failed",
               });
+              alert(error.response.data.message);
             } finally {
               setSubmitting(false);
             }

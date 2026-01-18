@@ -1,43 +1,66 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import Card from "../../components/Card";
+import { FaHeart } from "react-icons/fa";
+import { useSearchParams } from "react-router-dom";
+import { ImFire } from "react-icons/im";
 
 const Blogsadmin = () => {
   const nav = useNavigate();
   const [blog, setBlogs] = useState();
+  const [searchParams] = useSearchParams();
+  const search = searchParams.get("search") || "";
+  const [sorted, setSorted] = useState("");
   const fetchData = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/blog/get");
+      const url = search
+        ? `http://localhost:5000/blog/get?search=${search}`
+        : "http://localhost:5000/blog/get";
+
+      const res = await axios.get(url);
       setBlogs(res.data);
       console.log(res.data);
     } catch (error) {
       console.log(error);
+      alert(error.response.data.message);
     }
   };
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [search]);
 
   const handleDelete = async (id) => {
     if (!id) {
       alert("Blog not found");
       return;
     }
-    if (!window.confirm("Are you sure you want to delete this blog?")) return;
     try {
-      await axios.delete(`http://localhost:5000/blog/delete/${id}`);
-      alert("Blog deleted successfully");
+      await axios.delete(`http://localhost:5000/blog/delete/${id}`, {
+        headers: {
+          authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      });
       fetchData();
     } catch (error) {
       console.log(error);
+      alert(error.response.data.message);
     }
   };
 
+const displayedBlogs = React.useMemo(() => {
+  if (sorted === "likes") {
+    return [...blog].filter((b) => b.likeCount > 0).sort((a, b) => b.likeCount - a.likeCount);
+  } else if (sorted === "unpublished") {
+    return blog.filter((b) => !b.published);
+  } else {
+    return blog;
+  }
+}, [sorted, blog]);
+
   return (
     <div className="h-full flex flex-col justify-center items-center p-5 bg-amber-50 shadow-lg rounded-2xl">
-      <div className="flex flex-col justify-center items-center">
+      <div className="flex flex-col justify-center items-center mt-10">
         <h1 className="text-3xl font-bold text-amber-600">All Blogs</h1>
         <p className="text-amber-500 mb-6">
           Here's your blog overview for today
@@ -52,8 +75,20 @@ const Blogsadmin = () => {
           Add Blogs
         </button>
       </div>
+      <div className="w-full flex flex-row items-center">
+        <button className=" bg-slate-200 hover:bg-slate-400 text-amber-600 font-bold p-1 rounded" 
+        onClick={() => setSorted("")}>
+          total({blog?.length})
+        </button>
+        <button className="ml-5 bg-slate-200 hover:bg-slate-400 text-amber-600 font-bold p-1 rounded" onClick={() => setSorted("likes")}> <ImFire className="inline fill-red-500 mr-1" />
+          Most likes
+        </button>
+         <button className="ml-5 bg-slate-200 hover:bg-slate-400 text-amber-600 font-bold p-1 rounded" onClick={() => setSorted("unpublished")}> 
+          Unpublished ({blog?.filter((b) => !b.published).length})
+          </button>
+      </div>
 
-      {blog?.map((item) => (
+      {displayedBlogs?.map((item) => (
         <div
           key={item._id}
           className="max-w-8xl m-auto my-2 bg-white rounded-xl shadow-lg lg:h-50 md:h-50 overflow-hidden flex flex-col md:flex-row "
@@ -82,27 +117,30 @@ const Blogsadmin = () => {
               <p className="mt-3 ml-2 text-amber-700 rounded-2xl px-3 py-1 bg-amber-100 inline-block">
                 {item.published ? "Published" : "Draft"}
               </p>
+              <p className="mt-3 ml-2 text-amber-700 rounded-2xl px-3 py-1 bg-amber-100 inline-block">
+                <FaHeart className="inline" /> {item.likeCount} Likes
+              </p>
               <div className="flex justify-end items-center gap-3">
-              <button
-                className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition"
-                onClick={() => nav(`/admin/blogform/${item._id}`)}
-              >
-                Edit
-              </button>
+                <button
+                  className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition"
+                  onClick={() => nav(`/admin/blogform/${item._id}`)}
+                >
+                  Edit
+                </button>
 
-              <button
-                className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition"
-                onClick={() => handleDelete(item._id)}
-              >
-                Delete
-              </button>
-            </div>
+                <button
+                  className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition"
+                  onClick={() => handleDelete(item._id)}
+                >
+                  Delete
+                </button>
+              </div>
             </div>
           </div>
         </div>
       ))}
 
-      {blog?.length === 0 && (
+      {displayedBlogs?.length === 0 && (
         <h1 className="text-2xl font-bold text-red-600">No Blogs Found</h1>
       )}
     </div>

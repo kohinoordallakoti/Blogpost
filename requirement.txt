@@ -1,3 +1,0 @@
-tailwindcss
-axios
-react-icons

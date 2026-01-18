@@ -28,8 +28,20 @@ export const createBlog = async (req, res) => {
 
 export const getAllBlogs = async (req, res) => {
   try {
-    const blogs = await Blog.find().sort({ createdAt: -1 });
+    const { search } = req.query;
 
+    let query = {};
+
+    if (search) {
+      query = {
+        $or: [
+          { title: { $regex: search, $options: "i" } },
+          { category: { $regex: search, $options: "i" } },
+        ],
+      };
+    }
+
+    const blogs = await Blog.find(query).sort({ createdAt: -1 });
     const blogsWithLikes = await Promise.all(
       blogs.map(async (blog) => {
         const likeCount = await LikeBlog.countDocuments({ blog: blog._id });
@@ -184,7 +196,7 @@ export const getlikeBlogs = async(req,res) => {
 
     // Get like counts for each blog
     const blogsWithLikeCounts = await Promise.all(
-      likedBlogs.map(async (like) => {
+      likedBlogs.filter((like) => like.blog != null).map(async (like) => {
         if (!like.blog) return null;
         
         const likeCount = await LikeBlog.countDocuments({ blog: like.blog._id });

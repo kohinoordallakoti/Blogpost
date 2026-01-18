@@ -10,21 +10,31 @@ import { BsFillLightningChargeFill } from "react-icons/bs";
 
 const Dashboard = () => {
   const nav = useNavigate();
+  const [blogs, setBlogs] = useState([]);
   const [countblogs, setCountBlogs] = useState(0);
   const [countpublished, setCountPublished] = useState(0);
-  // const [likedblogs, setLikedBlogs] = useState(0);
-  useEffect(() => {
-    axios
-      .get("http://localhost:5000/blog/get")
-      .then((res) => {
-        const blogs = res.data;
-        setCountBlogs(blogs.length);
-        const publishedCount = blogs.filter(blog => blog.published).length;
+
+  const fetchBlogs = async () => {
+    try {
+      const res = await axios.get("http://localhost:5000/blog/get");
+      const blog = res.data;
+      setBlogs(blog);
+
+      setCountBlogs(blog.length);
+        const publishedCount = blog.filter(b => b.published).length;
       setCountPublished(publishedCount);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  
+  const totalLikes = React.useMemo(() => {
+  if (!blogs) return 0;
+  return blogs.reduce((sum, b) => sum + (b.likeCount || 0), 0);
+}, [blogs]);
+
+  useEffect(() => {
+    fetchBlogs();
   }, []);
 
   return (
@@ -41,7 +51,7 @@ const Dashboard = () => {
             <div className="text-sm">{countpublished} Published, {countblogs - countpublished} Drafts</div>
           </div>
           <div className="bg-pink-400 text-white p-6 rounded-xl shadow">
-            <div className="text-2xl font-bold">0</div>
+            <div className="text-2xl font-bold">{totalLikes}</div>
             <div>Liked Blogs</div>
             <div className="text-sm">Across all your blogs</div>
           </div>
@@ -57,7 +67,7 @@ const Dashboard = () => {
           </div>
         </div>
 
-        <h2 className="text-xl font-bold mb-3"><BsFillLightningChargeFill className="inline text-yellow-500"/> Quick Actions</h2>
+        <h2 className="text-xl font-bold mb-3 text-amber-700"><BsFillLightningChargeFill className="inline text-yellow-500"/> Quick Actions</h2>
         <div className="grid grid-cols-3 gap-4">
           <button className="bg-amber-100 hover:bg-amber-200 p-6 rounded-xl shadow flex flex-col items-center gap-2"
           onClick={()=>nav('/admin/blogform')}>

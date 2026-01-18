@@ -5,11 +5,11 @@ import {authMiddleware} from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-router.post("/create",authMiddleware, upload.single("image"), createBlog);
+router.post("/create", upload.single("image"), createBlog);
 
 router.get("/get", getAllBlogs);
 
-router.get("/get/:id",authMiddleware, getSingleBlog);
+router.get("/get/:id", getSingleBlog);
 
 router.put("/update/:id", authMiddleware, upload.single("image"), updateBlog);
 
@@ -17,7 +17,7 @@ router.delete("/delete/:id", authMiddleware, deleteBlog);
 
 router.post("/like/:id", authMiddleware, likeBlogs);
 
-router.get("/liked", authMiddleware , getlikeBlogs);
+router.get("/liked", authMiddleware, getlikeBlogs);
 
 router.delete("/unlike/:id", authMiddleware, dislikeBlog);
 

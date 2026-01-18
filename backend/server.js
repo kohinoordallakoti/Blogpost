@@ -6,6 +6,7 @@ import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import blogRoutes from './routes/blogRoutes.js'
 import categoryRoutes from './routes/categoryRoutes.js'
+import contactRoutes from './routes/contactRoutes.js'
 
 dotenv.config()
 connectDB();
@@ -37,6 +38,8 @@ app.use('/user', userRoutes)
 app.use('/blog', blogRoutes)
 
 app.use('/category', categoryRoutes)
+
+app.use('/contact', contactRoutes)
 
 app.use("/upload", express.static("upload"));
 

@@ -26,41 +26,62 @@ const About = () => {
   ];
 
   return (
-    <div className="bg-amber-50 min-h-screen" >
-      <h1 className="text-3xl font-bold my-5">About Our Blogging App</h1>
-      <p>
+    <div className="bg-amber-50 min-h-screen p-6">
+      {/* Page Header */}
+      <h1 className="text-4xl font-extrabold text-amber-700 text-center my-8 drop-shadow-md">
+        About Our Blogging App
+      </h1>
+
+      <p className="max-w-3xl mx-auto text-amber-800 text-lg text-center mb-12">
         Welcome to our blogging app! Here, writers from around the world share their thoughts,
         experiences, and stories. Whether you are looking to read inspiring content or start your
         own blog, our platform is designed to make writing and sharing easy and enjoyable.
       </p>
 
-      <h2 className="text-xl font-bold my-5">Photos from Our Community</h2>
-      <div className="grid grid-cols-3 gap-4">
+      {/* Photo Gallery */}
+      <h2 className="text-2xl font-bold text-amber-700 mb-6 text-center">Photos from Our Community</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-12">
         {photos.map((photo, index) => (
-          <img
+          <div
             key={index}
-            src={photo}
-            alt={`Community ${index + 1}`}
-            className ="w-100 h-100 rounded-lg object-cover"
-          />
+            className="overflow-hidden rounded-xl shadow-lg transform hover:scale-105 transition duration-300"
+          >
+            <img
+              src={photo}
+              alt={`Community ${index + 1}`}
+              className="w-full h-64 object-cover"
+            />
+          </div>
         ))}
       </div>
 
-      <h2 className="text-xl font-bold mt-5">What Our Users Say</h2>
-      <div className="flex flex-col items-center m-6">
+      {/* User Reviews */}
+      <h2 className="text-2xl font-bold text-amber-700 mb-6 text-center">What Our Users Say</h2>
+      <div className="flex flex-col md:flex-row md:justify-center md:space-x-8 space-y-6 md:space-y-0">
         {reviews.map((review, index) => (
-          <div key={index}>
-            <div className="flex flex-col m-5">
-              <img
-                src={review.avatar}
-                alt={review.name}
-                className="w-20 h-20 rounded-full object-cover"
-              />
-              <strong>{review.name}</strong>
-            </div>
-            <p>{review.text}</p>
+          <div
+            key={index}
+            className="bg-white rounded-xl shadow-md p-6 max-w-sm hover:shadow-xl transition duration-300 flex flex-col items-center text-center"
+          >
+            <img
+              src={review.avatar}
+              alt={review.name}
+              className="w-20 h-20 rounded-full object-cover mb-4 border-2 border-amber-500"
+            />
+            <strong className="text-amber-700 text-lg mb-2">{review.name}</strong>
+            <p className="text-amber-800">{review.text}</p>
           </div>
         ))}
+      </div>
+
+      {/* Footer CTA */}
+      <div className="text-center mt-16">
+        <p className="text-amber-700 text-lg mb-4">
+          Ready to share your story? Join our community today!
+        </p>
+        <button className="bg-amber-600 text-white px-6 py-3 rounded-full font-semibold shadow-md hover:bg-amber-700 hover:scale-105 transition transform">
+          Get Started
+        </button>
       </div>
     </div>
   );

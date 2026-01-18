@@ -2,6 +2,7 @@ import React from 'react'
 import Sidebar from './Sidebar'
 import { Outlet } from 'react-router-dom'
 import { useState } from 'react'
+import Adminheader from './Adminheader';
 
 const AdminLayout = () => {
     const [open, setOpen] = useState(true);
@@ -12,6 +13,7 @@ const AdminLayout = () => {
             </div>
         <main className={`flex-1 overflow-hidden bg-slate-50 p-4 transition-all duration-500
           ${open ? "ml-60" : "ml-16"}`}>
+            <Adminheader/>
         <Outlet/>
       </main>
       </div>

@@ -15,6 +15,7 @@ import Categories from './pages/admin/Categories'
 import Blogsadmin from './pages/admin/Blogsadmin'
 import AdminLayout from './components/AdminLayout'
 import Blogform from './pages/admin/Blogform'
+import Contactadmin from './pages/admin/Contactadmin'
 
 const App = () => {
   return (
@@ -38,6 +39,8 @@ const App = () => {
         <Route path = "dashboard" element = {<Dashboard/>}/>
         <Route path = "categories" element = { <Categories/>}/>
         <Route path ="blogs" element = {<Blogsadmin/>}/>
+        <Route path = "profile" element = { <Profile/>}/>
+        <Route path = "contact" element ={<Contactadmin/>}/>
         </Route>
         </Route>
       </Routes>

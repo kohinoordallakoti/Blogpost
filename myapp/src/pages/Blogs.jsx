@@ -5,6 +5,7 @@ import Card from "../components/Card";
 import { useDispatch } from "react-redux";
 import { logout } from "../redux/authSlice";
 import { useSelector } from "react-redux";
+import { useSearchParams } from "react-router-dom";
 
 const Blogs = () => {
   const nav = useNavigate();
@@ -13,11 +14,17 @@ const Blogs = () => {
   const [blogs, setBlogs] = useState([]);
   const [likedBlogs, setLikedBlogs] = useState([]);
   const [publishedBlogs, setPublishedBlogs] = useState([]);
+  const [searchParams] = useSearchParams();
+  const search = searchParams.get("search") || "";
   const user = useSelector((state) => state.auth.user);
   // Fetch all blogs
   const fetchData = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/blog/get");
+      const url = search
+      ? `http://localhost:5000/blog/get?search=${search}`
+      : "http://localhost:5000/blog/get";
+
+    const res = await axios.get(url);
       setBlogs(res.data);
       console.log(res.data);
     } catch (err) {
@@ -29,8 +36,6 @@ const Blogs = () => {
   const fetchLikedBlogs = async () => {
     const token = localStorage.getItem("accessToken");
     if (!token) {
-      dispatch(logout());
-      nav("/login");
       return;
     }
 
@@ -48,30 +53,31 @@ const Blogs = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchAll = async () => {
-      await fetchData();
-      await fetchLikedBlogs();
-      setLoading(false);
-    };
-    fetchAll();
-  }, [user]);
+useEffect(() => {
+  const fetchAll = async () => {
+    setLoading(true);
+    await fetchData();
+    await fetchLikedBlogs();
+    setLoading(false);
+  };
+  fetchAll();
+}, search ? [search] : []);
 
   // Filter published blogs and merge with liked info
   const mergedBlogs = blogs
-    .filter((blog) => blog.published) // only published blogs
+    .filter((blog) => blog.published)
     .map((blog) => {
-      const likedBlog = likedBlogs.find((b) => b._id === blog._id);
+      const likedBlog = likedBlogs.find((b) => b && b._id === blog._id);
 
       return {
         ...blog,
-        likeCount: likedBlog?.likeCount ?? blog.likeCount ?? 0,
-        isLikedByUser: likedBlog?.isLikedByUser ?? false,
+        likeCount: blog.likeCount ?? 0,
+        isLikedByUser: Boolean(likedBlog),
       };
     });
 
   return (
-    <div className="flex flex-col justify-center items-center gap-10 bg-stale-100">
+    <div className="flex flex-col justify-center items-center gap-10 bg-stale-100 text-amber-700">
       <h1 className="text-3xl font-bold mt-5">All Blogs</h1>
 
       {loading ? (

@@ -29,6 +29,7 @@ const Blogform = () => {
         console.log(res.data);
       } catch (error) {
         console.log(error);
+        alert(error.response.data.message);
       }
     }
   };
@@ -44,6 +45,7 @@ const Blogform = () => {
       setCategories(res.data);
     } catch (error) {
       console.log(error);
+      alert(error.response.data.message);
     }
   };
 
@@ -69,13 +71,18 @@ const Blogform = () => {
         await axios.post("http://localhost:5000/blog/create", formData);
         alert("Blog created successfully");
       } else {
-        await axios.put(`http://localhost:5000/blog/update/${id}`, formData);
-        alert("Blog updated successfully");
+        await axios.put(`http://localhost:5000/blog/update/${id}`, formData,
+          {
+            headers: {
+              authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            },
+          }
+        );
       }
       nav("/admin/blogs");
     } catch (err) {
       console.log(err);
-      alert(err.message);
+      alert(err.response.data.message);
     }
   };
 
