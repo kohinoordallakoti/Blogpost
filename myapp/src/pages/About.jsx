@@ -1,6 +1,9 @@
 import React from "react";
+import { useNavigate } from 'react-router-dom';
+
 
 const About = () => {
+  const nav = useNavigate();
   const reviews = [
     {
       name: "Alice Johnson",
@@ -27,7 +30,6 @@ const About = () => {
 
   return (
     <div className="bg-amber-50 min-h-screen p-6">
-      {/* Page Header */}
       <h1 className="text-4xl font-extrabold text-amber-700 text-center my-8 drop-shadow-md">
         About Our Blogging App
       </h1>
@@ -38,7 +40,6 @@ const About = () => {
         own blog, our platform is designed to make writing and sharing easy and enjoyable.
       </p>
 
-      {/* Photo Gallery */}
       <h2 className="text-2xl font-bold text-amber-700 mb-6 text-center">Photos from Our Community</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-12">
         {photos.map((photo, index) => (
@@ -55,7 +56,6 @@ const About = () => {
         ))}
       </div>
 
-      {/* User Reviews */}
       <h2 className="text-2xl font-bold text-amber-700 mb-6 text-center">What Our Users Say</h2>
       <div className="flex flex-col md:flex-row md:justify-center md:space-x-8 space-y-6 md:space-y-0">
         {reviews.map((review, index) => (
@@ -74,12 +74,11 @@ const About = () => {
         ))}
       </div>
 
-      {/* Footer CTA */}
       <div className="text-center mt-16">
         <p className="text-amber-700 text-lg mb-4">
           Ready to share your story? Join our community today!
         </p>
-        <button className="bg-amber-600 text-white px-6 py-3 rounded-full font-semibold shadow-md hover:bg-amber-700 hover:scale-105 transition transform">
+        <button className="bg-amber-600 text-white px-6 py-3 rounded-full font-semibold shadow-md hover:bg-amber-700 hover:scale-105 transition transform" onClick={()=>nav('/register')}>
           Get Started
         </button>
       </div>

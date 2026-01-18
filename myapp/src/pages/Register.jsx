@@ -2,6 +2,7 @@ import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
+import { useEffect }from "react";
 
 const Register = () => {
   
@@ -12,6 +13,10 @@ const Register = () => {
     password: "",
     confirm_password: "",
   };
+
+  useEffect(()=> {
+    window.scrollTo({top:0, behavior:"smooth"});
+  },[])
 
   const validationSchema = Yup.object({
     name: Yup.string()

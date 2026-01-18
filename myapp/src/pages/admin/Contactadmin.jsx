@@ -23,14 +23,12 @@ const Contactadmin = () => {
   }, []);
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this contact?")) return;
-
     try {
       await axios.delete(`http://localhost:5000/contact/delete/${id}`);
       setContacts(contacts.filter((c) => c._id !== id)); 
     } catch (error) {
       console.log(error);
-      alert("Failed to delete contact.");
+      alert(error.message);
     }
   };
 

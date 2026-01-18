@@ -45,22 +45,23 @@ const Home = () => {
         </div>
       </section>
 
-      <section className="bg-white py-16">
+      <section className="bg-slate-50 py-16">
         <div className="max-w-7xl mx-auto px-6">
           <h3 className="text-2xl font-bold text-amber-700 text-center mb-8">
             Browse by Category
           </h3>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-6 ">
             {category.map((item) => (
               <div
                 key={item.id}
-                className="border-amber-700 border flex flex-col items-center justify-center gap-4 shadow-md p-6 rounded-lg hover:bg-amber-100 transition cursor-pointer"
+                className="bg-white shadow-md p-6 max-w-sm rounded-xl hover:shadow-xl trasition duration-300 flex flex-col justify-center items-center cursor-pointer"
               >
                 <h4 className="text-lg font-semibold text-amber-700">
                   {item.name}
                 </h4>
-                <h4 className="text-lg font-light text-amber-800">
+                <h4 className="text-lg font-sm text-amber-800">
                   {item.description}
                 </h4>
               </div>
