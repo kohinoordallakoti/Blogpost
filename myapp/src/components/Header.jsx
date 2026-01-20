@@ -9,26 +9,21 @@ const Header = () => {
   const dispatch = useDispatch();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
   const user = useSelector((state) => state.auth.user);
-
+  const [search, setSearch] = useState("");
   const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
   const toggleMobileMenu = () => setMobileMenuOpen(!mobileMenuOpen);
-  //   const handleSearchChange = (e) => setSearchQuery(e.target.value);
-
-  const handleSearchKeyDown = (e) => {
-    if (e.key === "Enter" && searchQuery.trim()) {
-      nav(`/blog?search=${encodeURIComponent(searchQuery)}`);
-      setSearchQuery("");
-    }
-  };
-
-  const handleSearchIconClick = () => {
-    if (searchQuery.trim()) {
-      nav(`/blog?search=${encodeURIComponent(searchQuery)}`);
-      setSearchQuery("");
-    }
-  };
+    useEffect(() => {
+      if (!search.trim()) return;
+  
+      const delay = setTimeout(() => {
+        nav(`/blog?search=${encodeURIComponent(search)}`);
+      }, 500);
+  
+      return () => clearTimeout(delay);
+  
+    }, [search, nav]);
+  
 
   return (
     <header className="bg-amber-600 text-white relative">
@@ -54,19 +49,16 @@ const Header = () => {
             Contact
           </Link>
         </nav>
-
         <div className="flex items-center gap-3 relative">
           <div className="hidden md:flex items-center bg-white rounded-full px-3 py-1">
             <FiSearch
               className="text-amber-600 cursor-pointer mr-2"
-              onClick={handleSearchIconClick}
             />
             <input
               type="text"
               placeholder="Search blogs..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyDown={handleSearchKeyDown}
+              value={search}
+              onChange={(e) => {setSearch(e.target.value);}}
               className="outline-none text-black bg-transparent"
             />
           </div>
@@ -153,20 +145,16 @@ const Header = () => {
   <FiSearch
     className="text-amber-600 cursor-pointer mr-2"
     onClick={() => {
-      handleSearchIconClick();
       toggleMobileMenu();
     }}
   />
   <input
     type="text"
     placeholder="Search blogs..."
-    value={searchQuery}
-    onChange={(e) => setSearchQuery(e.target.value)}
-    onKeyDown={(e) => {
-      handleSearchKeyDown(e);
-      toggleMobileMenu();
-    }}
+    value={search}
+    onChange={(e) => setSearch(e.target.value)}
     className="w-full outline-none text-black"
+    
   />
 </div>
         <nav className=" md:hidden bg-amber-500 text-white px-6 py-4 flex flex-col gap-3">

@@ -28,6 +28,14 @@ export const createBlog = async (req, res) => {
 
 export const getAllBlogs = async (req, res) => {
   try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 3;
+    console.log(page, limit);
+
+    const skip = (page  -1) * limit;
+
+
+
     const { search } = req.query;
 
     let query = {};
@@ -40,8 +48,8 @@ export const getAllBlogs = async (req, res) => {
         ],
       };
     }
-
-    const blogs = await Blog.find(query).sort({ createdAt: -1 });
+    const totalBlogs = await Blog.countDocuments(query);
+    const blogs = await Blog.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit);
     const blogsWithLikes = await Promise.all(
       blogs.map(async (blog) => {
         const likeCount = await LikeBlog.countDocuments({ blog: blog._id });
@@ -52,7 +60,11 @@ export const getAllBlogs = async (req, res) => {
       })
     );
 
-    res.status(200).json(blogsWithLikes);
+    res.status(200).json({
+      blogsWithLikes,
+      currentPage: page,
+      totalPages: Math.ceil(totalBlogs / limit),}
+    );
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

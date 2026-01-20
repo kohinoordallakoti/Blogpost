@@ -3,6 +3,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { IoIosArrowBack } from "react-icons/io";
+import API from "../../axios/axios.js";
 
 const Blogform = () => {
   const { id } = useParams();
@@ -20,7 +21,7 @@ const Blogform = () => {
       return;
     } else {
       try {
-        const res = await axios.get(`http://localhost:5000/blog/get/${id}`);
+        const res = await API.get(`/blog/get/${id}`);
         setTitle(res.data.blog.title);
         setDescription(res.data.blog.description);
         setSelectedCategory(res.data.blog.category);
@@ -40,7 +41,7 @@ const Blogform = () => {
 
   const fetchCategory = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/category/get");
+      const res = await API.get("/category/get");
       console.log(res.data);
       setCategories(res.data);
     } catch (error) {
@@ -68,16 +69,9 @@ const Blogform = () => {
 
     try {
       if (!isEditmode) {
-        await axios.post("http://localhost:5000/blog/create", formData);
-        alert("Blog created successfully");
+        await API.post("/blog/create", formData);
       } else {
-        await axios.put(`http://localhost:5000/blog/update/${id}`, formData,
-          {
-            headers: {
-              authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-            },
-          }
-        );
+        await API.put(`/blog/update/${id}`, formData);
       }
       nav("/admin/blogs");
     } catch (err) {

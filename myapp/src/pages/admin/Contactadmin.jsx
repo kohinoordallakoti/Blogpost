@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { FaTrash } from "react-icons/fa";
+import API from "../../axios/axios.js";
 
 const Contactadmin = () => {
   const [contacts, setContacts] = useState([]);
@@ -9,7 +10,7 @@ const Contactadmin = () => {
   const fetchContacts = async () => {
     setLoading(true);
     try {
-      const res = await axios.get("http://localhost:5000/contact/get");
+      const res = await API.get("/contact/get");
       setContacts(res.data);
     } catch (error) {
       console.log(error);
@@ -24,7 +25,7 @@ const Contactadmin = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/contact/delete/${id}`);
+      await API.delete(`/contact/delete/${id}`);
       setContacts(contacts.filter((c) => c._id !== id)); 
     } catch (error) {
       console.log(error);

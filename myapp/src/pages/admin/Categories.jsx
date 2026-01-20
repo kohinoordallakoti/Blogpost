@@ -5,6 +5,7 @@ import { MdAddCircleOutline } from "react-icons/md";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import * as Yup from "yup";
 import axios from "axios";
+import API from "../../axios/axios.js";
 
 const Categories = () => {
   const [categories, setCategories] = useState([]);
@@ -111,13 +112,12 @@ const Categories = () => {
           onSubmit={async (values, { resetForm }) => {
             try {
               if (selectedId) {
-                await axios.put(
-                  `http://localhost:5000/category/update/${selectedId}`,
-                  values
-                );
+                await API.put(
+                  `/category/update/${selectedId}`,
+                  values);
               } else {
-                await axios.post(
-                  "http://localhost:5000/category/create",
+                await API.post(
+                  "/category/create",
                   values
                 );
               }

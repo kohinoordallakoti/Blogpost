@@ -4,11 +4,19 @@ import { CiHeart } from "react-icons/ci";
 import { IoMdSend } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { logout } from "../redux/authSlice";
+import API from "../axios/axios";
 
 const Card = ({ blogData }) => {
-  const { _id, image, title, description, category, likeCount: initialLikeCount, isLikedByUser } = blogData;
+  const {
+    _id,
+    image,
+    title,
+    description,
+    category,
+    likeCount: initialLikeCount,
+    isLikedByUser,
+  } = blogData;
   const [liked, setLiked] = useState(isLikedByUser || false);
   const [likeCount, setLikeCount] = useState(initialLikeCount || 0);
   const [comments, setComments] = useState([]);
@@ -26,17 +34,8 @@ const Card = ({ blogData }) => {
     }
 
     try {
-      const res = await axios.post(
-        `http://localhost:5000/blog/like/${_id}`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-        }
-      );
+      const res = await API.post(`/blog/like/${_id}`, {});
 
-      // Update state based on response
       setLiked(res.data.liked);
       setLikeCount(res.data.likeCount);
     } catch (err) {
@@ -45,29 +44,56 @@ const Card = ({ blogData }) => {
       navigate("/login");
     }
   };
-  console.log(likeCount);
 
   // Toggle comment box
-  const handleComment = () => {
+  const handleComment = async () => {
     if (!user) {
       navigate("/login");
       return;
     }
-    setShowCommentBox(!showCommentBox);
+
+    setShowCommentBox((prev) => !prev);
+
+    try {
+
+      const res = await API.get(`/blog/getcomment/${_id}`);
+      console.log(res.data);
+      setComments(res.data.comments || []);
+    } catch (err) {
+      console.log(err.response?.data || err.message);
+    }
   };
 
-  // Submit comment locally
-  const submitComment = () => {
+  const submitComment = async () => {
     if (!commentText.trim()) return;
-    setComments((prev) => [...prev, { user: user.name, text: commentText }]);
-    setCommentText("");
+
+    try {
+      const res = await API.post(`/blog/comment/${_id}`, {
+        comment: commentText,
+      });
+      setComments((prev = []) => [...prev, res.data.comment]);
+      setCommentText("");
+      setShowCommentBox(false);
+    } catch (error) {
+      console.log(error.response?.data || error.message);
+    }
   };
 
-    useEffect(() => {
+  const deleteComment = async (commentId) => {
+    try {
+            console.log("ID:", commentId);
+      await API.delete(`/blog/deletecomment/${commentId}`);
+      setComments((prev) => prev.filter((c) => c._id !== commentId));
+    } catch (error) {
+      console.log(error.response?.data || error.message);
+    }
+  };
+
+  useEffect(() => {
     setLiked(isLikedByUser);
     setLikeCount(initialLikeCount);
   }, [isLikedByUser, initialLikeCount]);
-
+  
 
   return (
     <div className="max-w-4xl m-6 bg-amber-50 rounded-xl shadow-lg overflow-hidden flex flex-col md:flex-row text-amber-600">
@@ -83,7 +109,9 @@ const Card = ({ blogData }) => {
         <div>
           <h2 className="text-2xl font-semibold">{title}</h2>
           <p className="mt-3 leading-relaxed">{description}</p>
-          <span className="inline px-2 rounded-xl bg-amber-100">{category}</span>
+          <span className="inline px-2 rounded-xl bg-amber-100">
+            {category}
+          </span>
         </div>
 
         <div className="flex items-center gap-6 mt-6">
@@ -91,7 +119,7 @@ const Card = ({ blogData }) => {
             onClick={handleLike}
             className="flex items-center gap-2 text-red-500 hover:text-red-600 transition"
           >
-            {liked ? <FaHeart/> : <CiHeart/> }
+            {liked ? <FaHeart /> : <CiHeart />}
             <span>{likeCount}</span>
           </button>
 
@@ -105,31 +133,47 @@ const Card = ({ blogData }) => {
         </div>
 
         {showCommentBox && (
-          <div className="mt-4 flex flex-col gap-2">
-            <input
-              type="text"
-              placeholder="Comment"
-              value={commentText}
-              onChange={(e) => setCommentText(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-amber-600"
-            />
-            <button
-              type="button"
-              onClick={submitComment}
-              className="self-end flex items-center gap-2 text-green-400 hover:text-green-500 transition cursor-pointer"
-            >
-              <IoMdSend /> Send
-            </button>
+          <div>
+            <div className="mt-4 flex flex-col gap-2">
+              <input
+                type="text"
+                placeholder="Comment"
+                value={commentText}
+                onChange={(e) => setCommentText(e.target.value)}
+                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-amber-600"
+              />
+              <button
+                type="button"
+                onClick={submitComment}
+                className="self-end flex items-center gap-2 text-green-400 hover:text-green-500 transition cursor-pointer"
+              >
+                <IoMdSend /> Send
+              </button>
+            </div>
+
+            <div className="mt-4 flex flex-col gap-2">
+              {comments?.map((comment) => (
+                <div
+                  key={comment._id}
+                  className="border border-gray-300 rounded-lg px-4 py-2 flex justify-between items-start"
+                >
+                  <div>
+                    <strong>{comment.user?.name}:</strong> {comment.comment}
+                  </div>
+                  {
+                    comment.user?._id === user?.id &&(
+                    <button
+                      onClick={() => deleteComment(comment._id)}
+                      className="text-red-400 hover:text-red-600 text-sm"
+                    >
+                      Delete
+                    </button>
+                    )}
+                </div>
+              ))}
+            </div>
           </div>
         )}
-
-        <div className="mt-4 flex flex-col gap-2">
-          {comments.map((comment, index) => (
-            <div key={index} className="border border-gray-300 rounded-lg px-4 py-2">
-              <strong>{comment.user}:</strong> {comment.text}
-            </div>
-          ))}
-        </div>
       </div>
     </div>
   );

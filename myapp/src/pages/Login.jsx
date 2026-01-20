@@ -4,21 +4,15 @@ import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
 import { login } from "../redux/authSlice";
 import { useDispatch } from "react-redux";
-import axios from "axios";
-import { useSelector } from "react-redux";
-import { logout } from "../redux/authSlice";
+import API from "../axios/axios.js";
 
 const Login = () => {
   const nav = useNavigate();
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.auth.user);
-
-
 
   const initialValues = {
     email: "",
     password: "",
-    role: "",
   };
 
   const validationSchema = Yup.object({
@@ -42,11 +36,8 @@ const Login = () => {
           validationSchema={validationSchema}
           onSubmit={async (values, { setSubmitting, setErrors }) => {
             try {
-              const res = await axios.post(
-                "http://localhost:5000/user/login",
-                values,
-                { withCredentials: true }
-              );
+              const res = await API.post(
+                "/user/login",values);
 
               const { user, accessToken, refreshToken } = res.data;
 
@@ -119,21 +110,18 @@ const Login = () => {
                   Login
                 </button>
               </div>
-              {Object.keys(touched).length === 0 && (
-                <div className="flex justify-center">
-                  <h1>
-                    Don't have an account?
-                    <button
-                      type="button"
-                      className="mx-1 text-amber-500 hover:text-blue-400 "
-                      onClick={() => nav("/register")}
-                    >
-                      {" "}
-                      Signup
-                    </button>
-                  </h1>
-                </div>
-              )}
+              <div className="flex justify-center mt-2">
+                <span>
+                  Don't have an account?
+                  <button
+                    type="button"
+                    className="mx-1 text-amber-500 hover:text-blue-400"
+                    onClick={() => nav("/register")}
+                  >
+                    Signup
+                  </button>
+                </span>
+              </div>
             </Form>
           )}
         </Formik>

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { FaLocationDot } from "react-icons/fa6";
 import { MdEmail } from "react-icons/md";
+import API from "../axios/axios.js";
 
 const Contact = () => {
   // State for form fields
@@ -29,7 +29,7 @@ const Contact = () => {
     setFeedback(null);
 
     try {
-      const res = await axios.post("http://localhost:5000/contact/create", form);
+      const res = await API.post("/contact/create", form);
       setFeedback({ type: "success", message: "Message sent successfully!" });
       setForm({ name: "", email: "", message: "" }); 
     } catch (error) {

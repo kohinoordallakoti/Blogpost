@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react'
 import { useState } from 'react'
-import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { useDispatch } from 'react-redux'
+import API from '../axios/axios.js'
 
 const LikedBlogs = () => {
   const nav = useNavigate();
@@ -12,16 +12,13 @@ const LikedBlogs = () => {
   const user = useSelector((state) => state.auth.user);
   const fetchlikedBlogs = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/blog/liked", {
-        headers: {
-          authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        },
-      });
+      const res = await API.get("/blog/liked");
       setLikedBlogs(res.data.likedBlogs);
       console.log(res.data);
     } catch (error) {
       console.log(error);
-
+      dispatch(logout());
+      nav("/login");
     }
   };
 
@@ -35,13 +32,7 @@ const LikedBlogs = () => {
       return;
     }
     try {
-      await axios.delete(`http://localhost:5000/blog/unlike/${id}`,
-        {
-          headers: {
-            authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-        }
-      );
+      await API.delete(`/blog/unlike/${id}`);
       fetchlikedBlogs();
     } catch (error) {
       console.log(error);

@@ -3,6 +3,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
 import { useEffect }from "react";
+import API from "../axios/axios.js";
 
 const Register = () => {
   
@@ -46,28 +47,12 @@ const Register = () => {
           onSubmit={async (values) => {
             console.log(values);
             try {
-              const res = await fetch("http://localhost:5000/user/create", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ 
-                  name: values.name,
-                  email: values.email, 
-                  password: values.password 
-                }),
-              });
-
-              const data = await res.json();
-
-              if (!res.ok) {
-                alert(data.message || "Something went wrong");
-                return;
-              }
+              const res = await API.post("/user/create", values);
+              const data = res.data;
               nav("/login");
             } catch (error) {
               console.error(error);
-              alert(error.message);
+              alert(error.response.data.message);
             }
           }
         }
@@ -150,14 +135,18 @@ const Register = () => {
                 Register
               </button>
             </div>
-            {Object.keys(touched).length === 0 && (
-            <div className="flex justify-center">
-              <h1>Already have an account? 
-                <button type="button" className="mx-1 text-amber-500 hover:text-blue-400 " onClick ={() => nav('/login')}> login</button>
-              </h1>
-                            
-            </div>
-            )}
+            <div className="flex justify-center mt-2">
+                <span>
+                  Already have an account?
+                  <button
+                    type="button"
+                    className="mx-1 text-amber-500 hover:text-blue-400"
+                    onClick={() => nav("/login")}
+                  >
+                    Login
+                  </button>
+                </span>
+              </div>
           </Form>)}
         </Formik>
       </div>

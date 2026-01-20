@@ -7,6 +7,7 @@ import { MdAddCircleOutline, MdWavingHand } from "react-icons/md";
 import { LuFolders } from "react-icons/lu";
 import { LuFileSpreadsheet } from "react-icons/lu";
 import { BsFillLightningChargeFill } from "react-icons/bs";
+import API from "../../axios/axios.js";
 
 const Dashboard = () => {
   const nav = useNavigate();
@@ -16,7 +17,7 @@ const Dashboard = () => {
 
   const fetchBlogs = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/blog/get");
+      const res = await API.get("/blog/get");
       const blog = res.data;
       setBlogs(blog);
 

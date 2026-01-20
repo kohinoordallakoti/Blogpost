@@ -1,15 +1,15 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useState , useEffect} from "react";
-import axios from "axios";
+import API from "../axios/axios.js";
 
 const Home = () => {
   const [category, setCategory] = useState([]);
   const nav = useNavigate();
 
   useEffect(() => {
-    axios
-      .get("http://localhost:5000/category/get")
+    API
+      .get("/category/get")
       .then((res) => {
         setCategory(res.data);
       })
@@ -53,9 +53,9 @@ const Home = () => {
 
 
           <div className="grid grid-cols-2 md:grid-cols-3 gap-6 ">
-            {category.map((item) => (
+            {category.map((item,index) => (
               <div
-                key={item.id}
+                key={index}
                 className="bg-white shadow-md p-6 max-w-sm rounded-xl hover:shadow-xl trasition duration-300 flex flex-col justify-center items-center cursor-pointer"
               >
                 <h4 className="text-lg font-semibold text-amber-700">

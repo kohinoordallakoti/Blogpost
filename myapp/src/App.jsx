@@ -1,51 +1,38 @@
-import React from 'react'
-import {Routes , Route} from 'react-router-dom'
-import MainLayout from './components/MainLayout'
-import Home from './pages/Home'
-import About from './pages/About'
-import Contact from './pages/Contact'
-import Register from './pages/Register'
-import Login from './pages/Login'
-import Dashboard from './pages/admin/Dashboard'
-import PrivateRoute from './components/PrivateRoutes'
-import Blogs from './pages/Blogs'
-import Profile from './pages/Profile'
-import LikedBlogs from './pages/LikedBlogs'
-import Categories from './pages/admin/Categories'
-import Blogsadmin from './pages/admin/Blogsadmin'
-import AdminLayout from './components/AdminLayout'
-import Blogform from './pages/admin/Blogform'
-import Contactadmin from './pages/admin/Contactadmin'
+import React from "react";
+import { Routes, Route } from "react-router-dom";
+import publicRoutes from "./routes/Publicroutes";
+import privateRoutes from "./routes/Privateroutes";
 
 const App = () => {
   return (
-    <div>
-      <Routes>
-        <Route path ="/" element = { <MainLayout/>}>
-        <Route index element = {<Home/>}/>
-        <Route path ="/blog" element = {<Blogs/>}/>
-        <Route path ="/about" element ={<About/>}/>
-        <Route path ="/contact" element = {<Contact/>}/>
-        <Route path ="/register" element = { <Register/>}/>
-        <Route path ="/login" element = {<Login/>}/>
-        <Route element = {<PrivateRoute/>}>
-        <Route path ="likedblogs" element = {<LikedBlogs/>}/>
-        <Route path ="/profile" element = { <Profile/>}/>
+    <Routes>
+      {/* Public routes */}
+      {publicRoutes.map((route, i) => (
+        <Route key={i} path={route.path} element={route.element}>
+          {route.children?.map((child, j) => (
+            <Route key={j} index={child.index} path={child.path} element={child.element} />
+          ))}
         </Route>
-        </Route>
-        <Route element = {<PrivateRoute/>}>
-        <Route path = "/admin" element = {<AdminLayout/>}>
-        <Route path ="blogform" element = {<Blogform/>}/>
-        <Route path = "dashboard" element = {<Dashboard/>}/>
-        <Route path = "categories" element = { <Categories/>}/>
-        <Route path ="blogs" element = {<Blogsadmin/>}/>
-        <Route path = "profile" element = { <Profile/>}/>
-        <Route path = "contact" element ={<Contactadmin/>}/>
-        </Route>
-        </Route>
-      </Routes>
-    </div>
-  )
-}
+      ))}
 
-export default App
+      {/* Private routes */}
+      {privateRoutes.map((route, i) => (
+        <Route key={i} element={route.element}>
+          {route.children?.map((child, j) =>
+            child.children ? (
+              <Route key={j} path={child.path} element={child.element}>
+                {child.children.map((grand, k) => (
+                  <Route key={k} path={grand.path} element={grand.element} />
+                ))}
+              </Route>
+            ) : (
+              <Route key={j} path={child.path} element={child.element} />
+            )
+          )}
+        </Route>
+      ))}
+    </Routes>
+  );
+};
+
+export default App;

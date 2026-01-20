@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { FaHeart } from "react-icons/fa";
 import { useSearchParams } from "react-router-dom";
 import { ImFire } from "react-icons/im";
+import API from "../../axios/axios.js";
 
 const Blogsadmin = () => {
   const nav = useNavigate();
@@ -14,10 +15,10 @@ const Blogsadmin = () => {
   const fetchData = async () => {
     try {
       const url = search
-        ? `http://localhost:5000/blog/get?search=${search}`
-        : "http://localhost:5000/blog/get";
+        ? `/blog/get?search=${search}`
+        : "/blog/get";
 
-      const res = await axios.get(url);
+      const res = await API.get(url);
       setBlogs(res.data);
       console.log(res.data);
     } catch (error) {
@@ -36,11 +37,7 @@ const Blogsadmin = () => {
       return;
     }
     try {
-      await axios.delete(`http://localhost:5000/blog/delete/${id}`, {
-        headers: {
-          authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        },
-      });
+      await API.delete(`/blog/delete/${id}`);
       fetchData();
     } catch (error) {
       console.log(error);

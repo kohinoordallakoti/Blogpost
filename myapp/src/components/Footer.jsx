@@ -2,7 +2,6 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { FaLocationDot } from "react-icons/fa6";
 import { MdEmail } from "react-icons/md";
-import { BsTelephone } from "react-icons/bs";
 
 const Footer = () => {
   const currYear = new Date().getFullYear();
