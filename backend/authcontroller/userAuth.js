@@ -77,14 +77,6 @@ export const loginUser = async (req, res) => {
     }
 }
 
-export const loginAdmin = async (req, res) => {
-    try{
-
-    }catch(error)
-    {
-
-    }
-}
 
 export const logOutUser = async (req, res) => {
     try {

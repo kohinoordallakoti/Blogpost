@@ -19,7 +19,7 @@ const Blogsadmin = () => {
         : "/blog/get";
 
       const res = await API.get(url);
-      setBlogs(res.data);
+      setBlogs(res.data.blogsWithLikes);
       console.log(res.data);
     } catch (error) {
       console.log(error);

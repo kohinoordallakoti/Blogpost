@@ -50,8 +50,6 @@ console.log(totalpages)
     } catch (error) {
       console.log(error.response?.data || error.message);
       alert(error.message);
-      dispatch(logout());
-      nav("/login");
     }
   };
 
@@ -91,7 +89,7 @@ useEffect(() => {
         <h1 className="text-2xl font-bold">No Blogs Found</h1>
       )}
       </div>
-      <div>
+      <div className="flex items-center gap-5 mb-10">
         <button 
         onClick={() => setPage(page - 1)} 
         disabled={page === 1} 

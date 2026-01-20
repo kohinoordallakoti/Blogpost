@@ -17,37 +17,36 @@ API.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// RESPONSE INTERCEPTOR
-API.interceptors.response.use(
-  (response) => response,
-  async (error) => {
-    const originalRequest = error.config;
+// // RESPONSE INTERCEPTOR
+// API.interceptors.response.use(
+//   (response) => response,
+//   async (error) => {
+//     const originalRequest = error.config;
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
+//     if (error.response?.status === 401 && !originalRequest._retry) {
+//       originalRequest._retry = true;
 
-      try {
-        // 🔴 USE API, NOT axios
-        const refreshResponse = await API.post("/api/auth/refresh");
+//       try {
+//         const refreshResponse = await API.post("/api/auth/refresh");
 
-        const newAccessToken = refreshResponse.data.accessToken;
+//         const newAccessToken = refreshResponse.data.accessToken;
 
-        localStorage.setItem("accessToken", newAccessToken);
+//         localStorage.setItem("accessToken", newAccessToken);
 
-        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+//         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
 
-        return API(originalRequest);
-      } catch (err) {
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
-        localStorage.removeItem("user");
-        window.location.href = "/login";
-        return Promise.reject(err);
-      }
-    }
+//         return API(originalRequest);
+//       } catch (err) {
+//         localStorage.removeItem("accessToken");
+//         localStorage.removeItem("refreshToken");
+//         localStorage.removeItem("user");
+//         window.location.href = "/login";
+//         return Promise.reject(err);
+//       }
+//     }
 
-    return Promise.reject(error);
-  }
-);
+//     return Promise.reject(error);
+//   }
+// );
 
 export default API;

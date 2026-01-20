@@ -18,11 +18,12 @@ const Dashboard = () => {
   const fetchBlogs = async () => {
     try {
       const res = await API.get("/blog/get");
-      const blog = res.data;
+      const blog = res.data.blogsWithLikes;
       setBlogs(blog);
-
       setCountBlogs(blog.length);
-        const publishedCount = blog.filter(b => b.published).length;
+      console.log(blog.length)
+      const publishedCount = blog.filter(b => b.published).length;
+      console.log(publishedCount);
       setCountPublished(publishedCount);
     } catch (err) {
       console.log(err);
