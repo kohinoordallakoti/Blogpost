@@ -110,17 +110,9 @@ const Home = () => {
         <h3 className="text-2xl font-bold text-amber-700 text-center mb-8">
           Filtered Blogs
         </h3>
-        <div className="flex justify-end items-center mb-4">
-          <button
-            onClick={() => nav("/blog")}
-            className="text-amber-500 hover:text-amber-700 hover:underline font-semibold"
-          >
-            See More →
-          </button>
-        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {blog.map((item, index) => (
+          {blog.slice(0, 5).map((item, index) => (
             <div
               key={index}
               className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer hover:shadow-5xl hover:scale-105 transition"
@@ -150,6 +142,14 @@ const Home = () => {
               No blogs available in this category.
             </p>
           )}
+          <div className="flex justify-end items-center mb-4">
+          <button
+            onClick={() => nav("/blog")}
+            className="text-amber-500 hover:text-amber-700 hover:underline font-semibold"
+          >
+            See More →
+          </button>
+        </div>
         </div>
       </section>
 

@@ -29,7 +29,6 @@ const Blogs = () => {
       console.log(res.data);
     } catch (error) {
       console.log(error);
-      alert(error.response.data.message);
     }
   };
 
@@ -44,7 +43,6 @@ const Blogs = () => {
       setLikedBlogs(res.data.likedBlogs);
     } catch (error) {
       console.log(error.response?.data || error.message);
-      alert(error.message);
     }
   };
 
@@ -73,7 +71,6 @@ useEffect(() => {
 
   return (
     <div className="flex flex-col justify-center items-center gap-10 bg-stale-100 text-amber-700">
-      <div>
       <h1 className="text-3xl font-bold mt-5">All Blogs</h1>
 
       {loading ? (
@@ -83,7 +80,6 @@ useEffect(() => {
       ) : (
         <h1 className="text-2xl font-bold">No Blogs Found</h1>
       )}
-      </div>
       <div className="flex items-center gap-5 mb-10">
         <button 
         onClick={() => setPage(page - 1)} 
@@ -94,7 +90,6 @@ useEffect(() => {
         disabled={page === totalpages} 
         className="m-5 bg-green-500 hover:bg-green-600 text-white p-2 rounded">Next</button>
       </div>
-
     </div>
   );
 };

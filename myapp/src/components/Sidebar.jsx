@@ -58,7 +58,7 @@ const Sidebar = ({open,setOpen}) => {
   };
   return (
     <div className={`h-screen duration-500 shadow-md
-        ${open ? "w-60 bg-amber-600 text-white" : "w-16 bg-gray-200 text-gray-800"}`}>
+        ${open ? "w-60 bg-linear-to-r from-amber-500 to-amber-600 text-white" : "w-16 bg-amber-600 text-gray-800"} drop-shadow-2xl`}>
           <div className="flex items-center justify-center">
             <h1 className={`text-2xl font-bold ${open ? "w-25" : "w-0" } overflow-hidden mr-5`}><CgProfile size={100} className="block"/></h1>
             <div><MdMenuOpen size={30} className="cursor-pointer " onClick={()=>setOpen(!open)}/></div>

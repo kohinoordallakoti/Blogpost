@@ -2,15 +2,15 @@ import Comment from "../model/comment.js";
 
 export const getComments = async (req, res) => {
   try {
-    const { blogId } = req.params;
-
-    // if (!blogId) {
-    //   return res.status(400).json({ message: "Blog ID is required" });
-    // }
+    const blogId  = req.params.id;
+    if (!blogId) {
+      return res.status(400).json({ message: "Blog ID is required" });
+    }
 
     const comments = await Comment.find({ blog: blogId })
       .populate("user", "name")
       .sort({ createdAt: -1 });
+
 
     res.status(200).json({
       success: true,
@@ -26,7 +26,7 @@ export const getComments = async (req, res) => {
 
 export const createComment = async (req, res) => {
   try {
-    const { blogId } = req.params;
+    const  blogId = req.params.id;
     const { comment } = req.body;
     const userId = req.userid;
 

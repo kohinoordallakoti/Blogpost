@@ -24,7 +24,7 @@ router.delete("/unlike/:id", authMiddleware, dislikeBlog);
 
 router.post("/comment/:id", authMiddleware, createComment);
 
-router.get("/getcomment/:id", getComments);
+router.get("/getcomment/:id", authMiddleware, getComments);
 
 router.delete("/deletecomment/:id", authMiddleware, deleteComment);
 

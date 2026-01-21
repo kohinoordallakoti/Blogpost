@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { useDispatch } from 'react-redux'
 import API from '../axios/axios.js'
+import { logout } from '../redux/authSlice.js'
 
 const LikedBlogs = () => {
   const nav = useNavigate();
@@ -59,13 +60,13 @@ const LikedBlogs = () => {
       {likedBlogs?.map((item) => (
         <div
           key={item._id}
-          className="max-w-8xl m-auto my-2 bg-white rounded-xl shadow-lg lg:h-50 md:h-50 overflow-hidden flex flex-col md:flex-row"
+          className=" w-4/5 my-2 bg-white rounded-xl shadow-lg lg:h-50 md:h-50 overflow-hidden flex flex-col md:flex-row"
         >
-          <div className="md:w-1/3 w-full h-56 md:h-auto m-auto">
+          <div className="md:w-1/3 w-1/3 h-56 md:h-auto m-auto">
             <img
               src={`http://localhost:5000/upload/${item.image}`}
               alt={item.title}
-              className="w-full object-cover"
+              className="w-full h-56 object-cover"
             />
           </div>
 
@@ -75,7 +76,7 @@ const LikedBlogs = () => {
                 {item.title}
               </h2>
 
-              <p className="mt-3 text-amber-600 leading-relaxed">
+              <p className="mt-3 text-amber-600 line-clamp-2">
                 {item.description}
               </p>
 

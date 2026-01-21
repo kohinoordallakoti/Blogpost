@@ -28,18 +28,9 @@ export const createBlog = async (req, res) => {
 
 export const getAllBlogs = async (req, res) => {
   try {
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 3;
-    console.log(page, limit);
-
-    const skip = (page  -1) * limit;
-
-
-
-    const { search } = req.query;
+    const { page, limits, search } = req.query;
 
     let query = {};
-
     if (search) {
       query = {
         $or: [
@@ -48,8 +39,31 @@ export const getAllBlogs = async (req, res) => {
         ],
       };
     }
-    const totalBlogs = await Blog.countDocuments(query);
-    const blogs = await Blog.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit);
+
+    const totalBlogs = await Blog.countDocuments(query); // filtered blogs
+
+    let blogs;
+    let currentPage = 1;
+    let totalPages = 1;
+
+    // Check if page and limit are provided → use pagination
+    if (page && limits) {
+      const parsedPage = parseInt(page) || 1;
+      const parsedLimit = parseInt(limits) || 3;
+      const skip = (parsedPage - 1) * parsedLimit;
+
+      blogs = await Blog.find(query)
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(parsedLimit);
+
+      currentPage = parsedPage;
+      totalPages = Math.ceil(totalBlogs / parsedLimit);
+    } else {
+      // No pagination → return all
+      blogs = await Blog.find(query).sort({ createdAt: -1 });
+    }
+    // Add like counts
     const blogsWithLikes = await Promise.all(
       blogs.map(async (blog) => {
         const likeCount = await LikeBlog.countDocuments({ blog: blog._id });
@@ -61,14 +75,15 @@ export const getAllBlogs = async (req, res) => {
     );
 
     res.status(200).json({
-      blogsWithLikes,
-      currentPage: page,
-      totalPages: Math.ceil(totalBlogs / limit),}
-    );
+      blogsWithLikes: blogsWithLikes,
+      currentPage,
+      totalPages,
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
+
 
 
 export const getSingleBlog = async(req,res) => {
@@ -195,6 +210,7 @@ export const dislikeBlog = async(req,res) => {
 export const getlikeBlogs = async(req,res) => {
     try {
     const userId = req.userid;
+    
     // Fetch all liked blogs for the user from the LikeBlog model
     const likedBlogs = await LikeBlog.find({ user: userId }).populate({
       path: "blog",
