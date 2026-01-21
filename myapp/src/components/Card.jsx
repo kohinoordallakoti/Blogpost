@@ -73,7 +73,6 @@ const Card = ({ blogData }) => {
       });
       setComments((prev = []) => [...prev, res.data.comment]);
       setCommentText("");
-      setShowCommentBox(false);
     } catch (error) {
       console.log(error.response?.data || error.message);
     }
@@ -81,7 +80,6 @@ const Card = ({ blogData }) => {
 
   const deleteComment = async (commentId) => {
     try {
-            console.log("ID:", commentId);
       await API.delete(`/blog/deletecomment/${commentId}`);
       setComments((prev) => prev.filter((c) => c._id !== commentId));
     } catch (error) {
@@ -101,14 +99,14 @@ const Card = ({ blogData }) => {
         <img
           src={`http://localhost:5000/upload/${image}`}
           alt={title}
-          className="w-full object-cover my-3"
+          className="w-full h-56 object-cover my-3"
         />
       </div>
 
       <div className="md:w-2/3 px-6 flex flex-col justify-between my-3">
         <div>
           <h2 className="text-2xl font-semibold">{title}</h2>
-          <p className="mt-3 leading-relaxed">{description}</p>
+          <p className="mt-3  leading-relaxed line-clamp-4">{description}</p>
           <span className="inline px-2 rounded-xl bg-amber-100">
             {category}
           </span>
@@ -130,6 +128,11 @@ const Card = ({ blogData }) => {
             <FaRegCommentDots />
             <span>Comment</span>
           </button>
+          <button 
+            onClick={() => navigate(`/blogdetails/${_id}`)} 
+            className="flex items-center gap-2 text-blue-400 hover:text-blue-500 transition duration-300 ease-in-out  cursor-pointer">
+              Read More
+            </button>
         </div>
 
         {showCommentBox && (

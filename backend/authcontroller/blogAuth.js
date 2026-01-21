@@ -73,11 +73,15 @@ export const getAllBlogs = async (req, res) => {
 
 export const getSingleBlog = async(req,res) => {
     try{
-        const blog =await Blog.findById(req.params.id);
+        const {id} = req.params;
+        const blog =await Blog.findById(id);
+        const likeCount = await LikeBlog.countDocuments({ blog: id });
+        const likedBlogs = await LikeBlog.findOne({ blog: id });
+        const isLikedByUser = likedBlogs ? true : false;
         if(!blog){
             return res.status(404).json({message:"Blog not found"});
         }
-        res.status(201).json({blog});
+        res.status(201).json({blog, likeCount, isLikedByUser});
     }catch(error){
         res.status(500).json({error:error.message})
     }

@@ -8,6 +8,7 @@ import Blogsadmin from "../pages/admin/Blogsadmin";
 import Blogform from "../pages/admin/Blogform";
 import Contactadmin from "../pages/admin/Contactadmin";
 import MainLayout from "../layout/MainLayout";
+import BlogDetails from "../components/BlogsDetails";
 
 const privateRoutes = [
   {
@@ -17,6 +18,7 @@ const privateRoutes = [
       {
         element: <MainLayout />,
         children: [
+            { path: "blogdetails/:id", element: <BlogDetails/> },
             { path: "likedblogs", element: <LikedBlogs /> },
             { path: "profile", element: <Profile /> },
             ],
@@ -31,6 +33,7 @@ const privateRoutes = [
           { path: "categories", element: <Categories /> },
           { path: "blogs", element: <Blogsadmin /> },
           { path: "blogform", element: <Blogform /> },
+          { path: "blogform/:id", element: <Blogform /> },
           { path: "profile", element: <Profile /> },
           { path: "contact", element: <Contactadmin /> },
         ],

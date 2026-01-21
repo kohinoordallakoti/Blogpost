@@ -1,14 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import Card from "../components/Card";
-import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
 import API from "../axios/axios.js";
 
 const Blogs = () => {
-  const nav = useNavigate();
-  const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
   const [blogs, setBlogs] = useState([]);
   const [likedBlogs, setLikedBlogs] = useState([]);
@@ -17,7 +13,7 @@ const Blogs = () => {
   const [page, setPage] = useState(1);
   const [totalpages, setTotalPages] = useState(1);
   const user = useSelector((state) => state.auth.user);
-  // Fetch all blogs
+ 
   const fetchData = async () => {
     try {
       const res = await API.get(`/blog/get`,{
@@ -36,8 +32,7 @@ const Blogs = () => {
       alert(error.response.data.message);
     }
   };
-console.log(totalpages)
-  // Fetch liked blogs for logged-in user
+
   const fetchLikedBlogs = async () => {
     const token = localStorage.getItem("accessToken");
     if (!token) {

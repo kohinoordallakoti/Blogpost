@@ -14,9 +14,7 @@ const Blogsadmin = () => {
   const [sorted, setSorted] = useState("");
   const fetchData = async () => {
     try {
-      const url = search
-        ? `/blog/get?search=${search}`
-        : "/blog/get";
+      const url = search ? `/blog/get?search=${search}` : "/blog/get";
 
       const res = await API.get(url);
       setBlogs(res.data.blogsWithLikes);
@@ -45,15 +43,17 @@ const Blogsadmin = () => {
     }
   };
 
-const displayedBlogs = React.useMemo(() => {
-  if (sorted === "likes") {
-    return [...blog].filter((b) => b.likeCount > 0).sort((a, b) => b.likeCount - a.likeCount);
-  } else if (sorted === "unpublished") {
-    return blog.filter((b) => !b.published);
-  } else {
-    return blog;
-  }
-}, [sorted, blog]);
+  const displayedBlogs = React.useMemo(() => {
+    if (sorted === "likes") {
+      return [...blog]
+        .filter((b) => b.likeCount > 0)
+        .sort((a, b) => b.likeCount - a.likeCount);
+    } else if (sorted === "unpublished") {
+      return blog.filter((b) => !b.published);
+    } else {
+      return blog;
+    }
+  }, [sorted, blog]);
 
   return (
     <div className="h-full flex flex-col justify-center items-center p-5 bg-amber-50 shadow-lg rounded-2xl">
@@ -73,64 +73,75 @@ const displayedBlogs = React.useMemo(() => {
         </button>
       </div>
       <div className="w-full flex flex-row items-center">
-        <button className=" bg-slate-200 hover:bg-slate-400 text-amber-600 font-bold p-1 rounded" 
-        onClick={() => setSorted("")}>
+        <button
+          className=" bg-slate-200 hover:bg-slate-400 text-amber-600 font-bold p-1 rounded"
+          onClick={() => setSorted("")}
+        >
           total({blog?.length})
         </button>
-        <button className="ml-5 bg-slate-200 hover:bg-slate-400 text-amber-600 font-bold p-1 rounded" onClick={() => setSorted("likes")}> <ImFire className="inline fill-red-500 mr-1" />
+        <button
+          className="ml-5 bg-slate-200 hover:bg-slate-400 text-amber-600 font-bold p-1 rounded"
+          onClick={() => setSorted("likes")}
+        >
+          {" "}
+          <ImFire className="inline fill-red-500 mr-1" />
           Most likes
         </button>
-         <button className="ml-5 bg-slate-200 hover:bg-slate-400 text-amber-600 font-bold p-1 rounded" onClick={() => setSorted("unpublished")}> 
+        <button
+          className="ml-5 bg-slate-200 hover:bg-slate-400 text-amber-600 font-bold p-1 rounded"
+          onClick={() => setSorted("unpublished")}
+        >
           Unpublished ({blog?.filter((b) => !b.published).length})
-          </button>
+        </button>
       </div>
 
       {displayedBlogs?.map((item) => (
         <div
           key={item._id}
-          className="max-w-8xl m-auto my-2 bg-white rounded-xl shadow-lg lg:h-50 md:h-50 overflow-hidden flex flex-col md:flex-row "
+          className="max-w-8xl m-auto my-4 bg-white rounded-xl shadow-lg overflow-hidden flex flex-col md:flex-row"
         >
-          <div className="md:w-1/3 w-full h-56 md:h-auto m-auto">
+          <div className="md:w-1/3 w-full h-56 md:h-auto shrink-0">
             <img
               src={`http://localhost:5000/upload/${item.image}`}
               alt={item.title}
-              className="w-full object-cover"
+              className="w-full h-56 object-cover"
             />
           </div>
 
-          <div className="md:w-2/3 p-6 flex flex-col justify-between ">
-            <div>
-              <h2 className="text-2xl font-semibold text-amber-700">
+          <div className="md:w-2/3 p-6 flex flex-col justify-between relative">
+            <div className="absolute top-4 right-4 flex gap-2">
+              <button
+                className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition"
+                onClick={() => nav(`/admin/blogform/${item._id}`)}
+              >
+                Edit
+              </button>
+              <button
+                className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition"
+                onClick={() => handleDelete(item._id)}
+              >
+                Delete
+              </button>
+            </div>
+
+            <div className="pr-0 md:pr-32">
+              {" "}
+              <h2 className="text-2xl font-semibold text-amber-700 truncate">
                 {item.title}
               </h2>
-
-              <p className="mt-3 text-amber-600 leading-relaxed">
+              <p className="mt-3 text-amber-600 leading-relaxed line-clamp-5">
                 {item.description}
               </p>
-
-              <p className="mt-3 text-amber-700 rounded-2xl px-3 py-1 bg-amber-100 inline-block">
-                {item.category}
-              </p>
-              <p className="mt-3 ml-2 text-amber-700 rounded-2xl px-3 py-1 bg-amber-100 inline-block">
-                {item.published ? "Published" : "Draft"}
-              </p>
-              <p className="mt-3 ml-2 text-amber-700 rounded-2xl px-3 py-1 bg-amber-100 inline-block">
-                <FaHeart className="inline" /> {item.likeCount} Likes
-              </p>
-              <div className="flex justify-end items-center gap-3">
-                <button
-                  className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition"
-                  onClick={() => nav(`/admin/blogform/${item._id}`)}
-                >
-                  Edit
-                </button>
-
-                <button
-                  className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition"
-                  onClick={() => handleDelete(item._id)}
-                >
-                  Delete
-                </button>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <span className="text-amber-700 rounded-2xl px-3 py-1 bg-amber-100 inline-block">
+                  {item.category}
+                </span>
+                <span className="text-amber-700 rounded-2xl px-3 py-1 bg-amber-100 inline-block">
+                  {item.published ? "Published" : "Draft"}
+                </span>
+                <span className="text-amber-700 rounded-2xl px-3 py-1 bg-amber-100  flex items-center gap-1">
+                  <FaHeart /> {item.likeCount} Likes
+                </span>
               </div>
             </div>
           </div>
