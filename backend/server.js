@@ -28,7 +28,7 @@ app.use((err,req,res,next) => {
 })
 
 app.use(cors({
-  origin:"http://localhost:5173",
+  origin:"https://blogging-8r9u.onrender.com",
   methods:["GET","POST","PUT","DELETE"],
   credentials:true,
 })  );
