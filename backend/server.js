@@ -11,6 +11,11 @@ import contactRoutes from './routes/contactRoutes.js'
 dotenv.config()
 connectDB();
 const app = express();
+app.use(cors({
+  origin:"https://blogging-8r9u.onrender.com",
+  methods:["GET","POST","PUT","DELETE"],
+  credentials:true,
+})  );
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.json());
@@ -26,12 +31,6 @@ app.use((err,req,res,next) => {
   console.log(err)
   next();
 })
-
-app.use(cors({
-  origin:"https://blogging-8r9u.onrender.com",
-  methods:["GET","POST","PUT","DELETE"],
-  credentials:true,
-})  );
 
 app.use('/user', userRoutes)
 
