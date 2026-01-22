@@ -119,7 +119,7 @@ const Home = () => {
               onClick={() => nav(`/blogdetails/${item._id}`)}
             >
               <img
-                src={`http://localhost:5000/upload/${item.image}`}
+                src={`https://blogpost-i7o1.onrender.com/upload/${item.image}`}
                 alt={item.title}
                 className="w-full h-48 object-cover"
               />
