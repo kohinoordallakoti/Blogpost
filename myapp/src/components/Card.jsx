@@ -98,7 +98,7 @@ const Card = ({ blogData }) => {
     <div className="w-4/5 md:w-3/4 m-6 bg-amber-50 rounded-xl shadow-lg overflow-hidden flex flex-col md:flex-row text-amber-600">
       <div className="md:w-1/3 w-full h-56 md:h-auto">
         <img
-          src={`http://localhost:5000/upload/${image}`}
+          src={`https://blogpost-i7o1.onrender.com/upload/${image}`}
           alt={title}
           className="w-full h-56 object-cover my-3"
         />
