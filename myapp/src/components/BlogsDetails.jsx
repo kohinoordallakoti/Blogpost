@@ -113,7 +113,7 @@ const BlogDetails = () => {
         </h1>
         <div className="flex justify-center items-center">
           <img
-            src={`http://localhost:5000/upload/${blog.image}`}
+            src={`https://blogpost-i7o1.onrender.com/upload/${blog.image}`}
             alt={blog.title}
             className="w-100 h-150 object-contain"
           />
