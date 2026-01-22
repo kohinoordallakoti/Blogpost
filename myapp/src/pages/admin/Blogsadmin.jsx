@@ -91,7 +91,7 @@ const displayedBlogs = React.useMemo(() => {
         >
           <div className="md:w-1/3 w-full h-56 md:h-auto m-auto">
             <img
-              src={`http://localhost:5000/upload/${item.image}`}
+              src={`https://blogpost-i7o1.onrender.com/upload/${item.image}`}
               alt={item.title}
               className="w-full h-56 object-cover"
             />
